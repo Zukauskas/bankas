@@ -10,14 +10,14 @@ function App() {
         console.log(name, lastName);
         setAccount((prevState) => [
             ...prevState,
-            { name, lastName, id: Math.random() },
+            { name, lastName, id: Math.random(), sum: 0 },
         ]);
     };
 
     return (
         <div className="App">
             <AddNewAccount addAccount={accountHandler} />
-            <AccountList accounts={account} />
+            <AccountList accounts={account} setAccount={setAccount} />
         </div>
     );
 }
