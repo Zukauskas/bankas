@@ -5,20 +5,20 @@ const AccountList = ({ accounts, setAccount }) => {
         setAccount((prevState) => prevState.filter((acc) => acc.id !== id));
     };
 
-    const [money, setMoney] = useState({ money: 0, id: null });
-
     const sumHandler = (e) => {
-        setMoney({ money: e.target.value, id: e.target.id });
+        let updatedMoney = accounts.map((acc) =>
+            acc.id === +e.target.id
+                ? { ...acc, enteredAmount: e.target.value }
+                : acc
+        );
+        setAccount(updatedMoney);
     };
 
     const depositHandler = (id) => {
-        let updatedMoney = accounts;
-        if (+money.id === id) {
-            updatedMoney = accounts.map((acc) =>
-                acc.id === id ? { ...acc, sum: acc.sum + +money.money } : acc
-            );
-            setAccount(updatedMoney);
-        }
+        let updatedMoney = accounts.map((acc) =>
+            acc.id === id ? { ...acc, sum: acc.sum + +acc.enteredAmount } : acc
+        );
+        setAccount(updatedMoney);
     };
 
     return (
@@ -37,7 +37,7 @@ const AccountList = ({ accounts, setAccount }) => {
                             type="number"
                             id={acc.id}
                             onChange={sumHandler}
-                            // value={money.money}
+                            //value={acc.enteredAmount}
                         />
                         <button onClick={() => depositHandler(acc.id)}>
                             Deposit

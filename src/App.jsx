@@ -10,7 +10,7 @@ function App() {
         console.log(name, lastName);
         setAccount((prevState) => [
             ...prevState,
-            { name, lastName, id: Math.random(), sum: 0 },
+            { name, lastName, id: Math.random(), sum: 0, enteredAmount: '' },
         ]);
     };
 
