@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import AccountList from './Components/AccountList';
+import AccountSummary from './Components/AccountSummary';
 import AddNewAccount from './Components/AddNewAccount';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
 
     return (
         <div className="App">
+            <AccountSummary accounts={account} />
             <AddNewAccount addAccount={accountHandler} />
             <AccountList accounts={account} setAccount={setAccount} />
         </div>
