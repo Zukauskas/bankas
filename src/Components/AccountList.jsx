@@ -1,4 +1,8 @@
+import { useState } from 'react';
+
 const AccountList = ({ accounts, setAccount }) => {
+    const [accountFilter, setAccountFilter] = useState('All');
+
     const deleteHandler = (id) => {
         setAccount((prevState) => prevState.filter((acc) => acc.id !== id));
     };
@@ -38,10 +42,27 @@ const AccountList = ({ accounts, setAccount }) => {
         setAccount(updatedMoney);
     };
 
+    const filterHandler = (e) => {
+        setAccountFilter(e.target.value);
+    };
+
     return (
         <>
+            <label htmlFor="account">Accounts:</label>
+            <select name="account" id="account" onChange={filterHandler}>
+                <option value="All">All</option>
+                <option value="withMoney">With Money</option>
+                <option value="noMoney">No Money</option>
+            </select>
             {[...accounts]
                 .sort((a, b) => a.lastName.localeCompare(b.lastName))
+                .filter((acc) =>
+                    accountFilter === 'withMoney'
+                        ? acc.sum > 0
+                        : accountFilter === 'noMoney'
+                        ? acc.sum === 0
+                        : true
+                )
                 .map((acc) => (
                     <div key={acc.id}>
                         <p>{acc.name}</p>
