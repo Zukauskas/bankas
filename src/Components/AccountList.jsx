@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 const AccountList = ({ accounts, setAccount }) => {
     const deleteHandler = (id) => {
         setAccount((prevState) => prevState.filter((acc) => acc.id !== id));
@@ -16,7 +14,26 @@ const AccountList = ({ accounts, setAccount }) => {
 
     const depositHandler = (id) => {
         let updatedMoney = accounts.map((acc) =>
-            acc.id === id ? { ...acc, sum: acc.sum + +acc.enteredAmount } : acc
+            acc.id === id
+                ? {
+                      ...acc,
+                      sum: acc.sum + +acc.enteredAmount,
+                      enteredAmount: '',
+                  }
+                : acc
+        );
+        setAccount(updatedMoney);
+    };
+
+    const withdrawHandler = (id) => {
+        let updatedMoney = accounts.map((acc) =>
+            acc.id === id
+                ? {
+                      ...acc,
+                      sum: acc.sum - +acc.enteredAmount,
+                      enteredAmount: '',
+                  }
+                : acc
         );
         setAccount(updatedMoney);
     };
@@ -37,12 +54,14 @@ const AccountList = ({ accounts, setAccount }) => {
                             type="number"
                             id={acc.id}
                             onChange={sumHandler}
-                            //value={acc.enteredAmount}
+                            value={acc.enteredAmount}
                         />
                         <button onClick={() => depositHandler(acc.id)}>
                             Deposit
                         </button>
-                        <button>Withdraw</button>
+                        <button onClick={() => withdrawHandler(acc.id)}>
+                            Withdraw
+                        </button>
                     </div>
                 ))}
         </>
