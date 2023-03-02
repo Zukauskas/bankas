@@ -18,7 +18,7 @@ const AddNewAccount = ({ addAccount }) => {
     };
 
     return (
-        <form onSubmit={dataHandler} className='flex mb-4'>
+        <form onSubmit={dataHandler} className='flex mb-4 flex-col gap-4'>
             <label htmlFor='name' className='mr-2'>
                 Name
             </label>

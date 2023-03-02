@@ -48,21 +48,23 @@ const AccountList = ({ accounts, setAccount }) => {
 
     return (
         <>
-            <label
-                htmlFor='account-select'
-                className='block mb-2 font-bold text-gray-700'
-            >
-                Accounts:
-            </label>
-            <select
-                name='account'
-                onChange={filterHandler}
-                className='border border-gray-400 rounded py-2 px-4 mb-4'
-            >
-                <option value='All'>All</option>
-                <option value='withMoney'>With Money</option>
-                <option value='noMoney'>No Money</option>
-            </select>
+            <div>
+                <label
+                    htmlFor='account-select'
+                    className='block mb-2 font-bold text-gray-700'
+                >
+                    Accounts:
+                </label>
+                <select
+                    name='account'
+                    onChange={filterHandler}
+                    className='border border-gray-400 rounded py-2 px-4 mb-4'
+                >
+                    <option value='All'>All</option>
+                    <option value='withMoney'>With Money</option>
+                    <option value='noMoney'>No Money</option>
+                </select>
+            </div>
             <div className='accounts-list'>
                 {[...accounts]
                     .sort((a, b) => a.lastName.localeCompare(b.lastName))
@@ -76,7 +78,7 @@ const AccountList = ({ accounts, setAccount }) => {
                     .map((acc) => (
                         <div
                             key={acc.id}
-                            className='bg-white shadow-md rounded px-8 py-6 mb-4'
+                            className='bg-white shadow-md rounded px-8 py-6 mb-4  relative'
                         >
                             <p className='font-bold text-gray-700 mb-2'>
                                 {acc.name}
@@ -87,10 +89,10 @@ const AccountList = ({ accounts, setAccount }) => {
                             </p>
                             <div className='flex items-center'>
                                 <button
-                                    className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2'
+                                    className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 absolute top-0 right-0'
                                     onClick={() => deleteHandler(acc.id)}
                                 >
-                                    Delete Account
+                                    X
                                 </button>
                                 <input
                                     type='number'
