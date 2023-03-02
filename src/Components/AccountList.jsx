@@ -14,7 +14,7 @@ const AccountList = ({ accounts, setAccount }) => {
         if (account[0].sum > 0) {
             setShowModal({
                 state: 'visible',
-                message: 'Account has money',
+                message: 'Can not delete account with money',
                 color: 'bg-red-500',
             });
             setTimeout(() => {
@@ -28,7 +28,7 @@ const AccountList = ({ accounts, setAccount }) => {
             setAccount((prevState) => prevState.filter((acc) => acc.id !== id));
             setShowModal({
                 state: 'visible',
-                message: 'Deleted',
+                message: 'Account deleted',
                 color: 'bg-green-500',
             });
             setTimeout(() => {
