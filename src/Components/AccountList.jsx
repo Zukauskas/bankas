@@ -65,7 +65,7 @@ const AccountList = ({ accounts, setAccount }) => {
                     <option value='noMoney'>No Money</option>
                 </select>
             </div>
-            <div className='accounts-list'>
+            <div className='container flex '>
                 {[...accounts]
                     .sort((a, b) => a.lastName.localeCompare(b.lastName))
                     .filter((acc) =>
@@ -80,6 +80,11 @@ const AccountList = ({ accounts, setAccount }) => {
                             key={acc.id}
                             className='bg-white shadow-md rounded px-8 py-6 mb-4  relative'
                         >
+                            <img
+                                src='./src/assets/racoon.png'
+                                alt='profile image'
+                                className='h-20 w-20 rounded-full ring-2 ring-orange-400'
+                            />
                             <p className='font-bold text-gray-700 mb-2'>
                                 {acc.name}
                             </p>
