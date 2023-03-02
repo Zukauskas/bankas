@@ -15,6 +15,8 @@ const AddNewAccount = ({ addAccount }) => {
     const dataHandler = (event) => {
         event.preventDefault();
         addAccount(name, lastName);
+        setName('');
+        setLastName('');
     };
 
     return (
@@ -30,6 +32,7 @@ const AddNewAccount = ({ addAccount }) => {
                     className='border border-gray-400 rounded py-2 px-4'
                     type='text'
                     id='name'
+                    value={name}
                     onChange={nameHandler}
                     required
                 />
@@ -40,6 +43,7 @@ const AddNewAccount = ({ addAccount }) => {
                     className='border border-gray-400 rounded py-2 px-4'
                     type='text'
                     id='lastName'
+                    value={lastName}
                     onChange={lastNameHandler}
                     required
                 />
