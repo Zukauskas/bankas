@@ -27,6 +27,7 @@ const AddNewAccount = ({ addAccount }) => {
                 type='text'
                 id='name'
                 onChange={nameHandler}
+                required
             />
             <label htmlFor='lastName' className='mx-2'>
                 Last Name
@@ -36,6 +37,7 @@ const AddNewAccount = ({ addAccount }) => {
                 type='text'
                 id='lastName'
                 onChange={lastNameHandler}
+                required
             />
             <button
                 className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ml-4'
