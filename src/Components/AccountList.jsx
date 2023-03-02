@@ -85,10 +85,9 @@ const AccountList = ({ accounts, setAccount }) => {
                                 alt='profile image'
                                 className='h-20 w-20 rounded-full ring-2 ring-orange-400'
                             />
-                            <p className='font-bold text-gray-700 mb-2'>
-                                {acc.name}
+                            <p className='font-bold text-gray-700 mb-2 capitalize'>
+                                {acc.name} {acc.lastName}
                             </p>
-                            <p className='text-gray-700 mb-2'>{acc.lastName}</p>
                             <p className='text-gray-700 font-bold mb-2'>
                                 ${acc.sum}
                             </p>
