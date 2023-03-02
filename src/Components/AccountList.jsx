@@ -6,37 +6,52 @@ const AccountList = ({ accounts, setAccount }) => {
     const [showModal, setShowModal] = useState({
         state: 'hidden',
         message: null,
+        color: '',
     });
 
     const deleteHandler = (id) => {
         const account = accounts.filter((acc) => acc.id === id);
         if (account[0].sum > 0) {
-            setShowModal({ state: 'visible', message: 'Account has money' });
+            setShowModal({
+                state: 'visible',
+                message: 'Account has money',
+                color: 'crimson',
+            });
             setTimeout(() => {
                 setShowModal({
                     state: 'hidden',
                     message: '',
+                    color: '',
                 });
-            }, 1000);
+            }, 2000);
         } else {
             setAccount((prevState) => prevState.filter((acc) => acc.id !== id));
-            setShowModal({ state: 'visible', message: 'Deleted' });
+            setShowModal({
+                state: 'visible',
+                message: 'Deleted',
+                color: 'green',
+            });
             setTimeout(() => {
                 setShowModal({
                     state: 'hidden',
                     message: '',
+                    color: '',
                 });
-            }, 1000);
+            }, 2000);
         }
     };
 
     const sumHandler = (e) => {
-        let updatedMoney = accounts.map((acc) =>
-            acc.id === +e.target.id
-                ? { ...acc, enteredAmount: e.target.value }
-                : acc
-        );
-        setAccount(updatedMoney);
+        let enteredSum = e.target.value;
+
+        if (+enteredSum >= 0 || !e.target.value) {
+            let updatedMoney = accounts.map((acc) =>
+                acc.id === +e.target.id
+                    ? { ...acc, enteredAmount: enteredSum }
+                    : acc
+            );
+            setAccount(updatedMoney);
+        }
     };
 
     const depositHandler = (id) => {
@@ -53,16 +68,33 @@ const AccountList = ({ accounts, setAccount }) => {
     };
 
     const withdrawHandler = (id) => {
-        let updatedMoney = accounts.map((acc) =>
-            acc.id === id
-                ? {
-                      ...acc,
-                      sum: acc.sum - +acc.enteredAmount,
-                      enteredAmount: '',
-                  }
-                : acc
-        );
-        setAccount(updatedMoney);
+        const account = accounts.filter((acc) => acc.id === id);
+
+        if (+account[0].enteredAmount <= account[0].sum) {
+            let updatedMoney = accounts.map((acc) =>
+                acc.id === id
+                    ? {
+                          ...acc,
+                          sum: acc.sum - +acc.enteredAmount,
+                          enteredAmount: '',
+                      }
+                    : acc
+            );
+            setAccount(updatedMoney);
+        } else {
+            setShowModal({
+                state: 'visible',
+                message: 'Cannot withdraw more than in the account',
+                color: 'crimson',
+            });
+            setTimeout(() => {
+                setShowModal({
+                    state: 'hidden',
+                    message: '',
+                    color: '',
+                });
+            }, 2000);
+        }
     };
 
     const filterHandler = (e) => {
@@ -103,7 +135,7 @@ const AccountList = ({ accounts, setAccount }) => {
                                       {acc.name} {acc.lastName}
                                   </p>
                                   <p className='text-gray-700 font-bold mb-4'>
-                                      ${acc.sum}
+                                      ${acc.sum.toFixed(2)}
                                   </p>
                                   <div className='w-full flex flex-row items-center justify-between'>
                                       <button
