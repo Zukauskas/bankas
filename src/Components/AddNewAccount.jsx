@@ -20,41 +20,39 @@ const AddNewAccount = ({ addAccount }) => {
     };
 
     return (
-        <div className='flex items-center justify-center'>
-            <form
-                onSubmit={dataHandler}
-                className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'
+        <form
+            onSubmit={dataHandler}
+            className='flex justify-center w-2/4 items-center flex-col gap-4 lg:flex-row bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'
+        >
+            <label htmlFor='name' className='mr-2'>
+                Name
+            </label>
+            <input
+                className='border border-gray-400 rounded py-2 px-4'
+                type='text'
+                id='name'
+                value={name}
+                onChange={nameHandler}
+                required
+            />
+            <label htmlFor='lastName' className='mx-2'>
+                Last Name
+            </label>
+            <input
+                className='border border-gray-400 rounded py-2 px-4'
+                type='text'
+                id='lastName'
+                value={lastName}
+                onChange={lastNameHandler}
+                required
+            />
+            <button
+                className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ml-4'
+                type='submit'
             >
-                <label htmlFor='name' className='mr-2'>
-                    Name
-                </label>
-                <input
-                    className='border border-gray-400 rounded py-2 px-4'
-                    type='text'
-                    id='name'
-                    value={name}
-                    onChange={nameHandler}
-                    required
-                />
-                <label htmlFor='lastName' className='mx-2'>
-                    Last Name
-                </label>
-                <input
-                    className='border border-gray-400 rounded py-2 px-4'
-                    type='text'
-                    id='lastName'
-                    value={lastName}
-                    onChange={lastNameHandler}
-                    required
-                />
-                <button
-                    className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ml-4'
-                    type='submit'
-                >
-                    Add Account
-                </button>
-            </form>
-        </div>
+                Add Account
+            </button>
+        </form>
     );
 };
 
