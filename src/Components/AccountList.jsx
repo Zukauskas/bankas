@@ -15,7 +15,7 @@ const AccountList = ({ accounts, setAccount }) => {
             setShowModal({
                 state: 'visible',
                 message: 'Account has money',
-                color: 'crimson',
+                color: 'bg-red-500',
             });
             setTimeout(() => {
                 setShowModal({
@@ -29,7 +29,7 @@ const AccountList = ({ accounts, setAccount }) => {
             setShowModal({
                 state: 'visible',
                 message: 'Deleted',
-                color: 'green',
+                color: 'bg-green-500',
             });
             setTimeout(() => {
                 setShowModal({
@@ -85,7 +85,7 @@ const AccountList = ({ accounts, setAccount }) => {
             setShowModal({
                 state: 'visible',
                 message: 'Cannot withdraw more than in the account',
-                color: 'crimson',
+                color: 'bg-orange-500',
             });
             setTimeout(() => {
                 setShowModal({
@@ -114,7 +114,9 @@ const AccountList = ({ accounts, setAccount }) => {
     return (
         <>
             <AccountFilter filterHandler={filterHandler} />
-            <div className={showModal.state}>
+            <div
+                className={`${showModal.state} ${showModal.color} w-1/3 px-2 py-4 fixed top-1 text-center rounded-md`}
+            >
                 <p>{showModal.message}</p>
             </div>
             <div className='container flex flex-wrap gap-4 relative justify-center'>
