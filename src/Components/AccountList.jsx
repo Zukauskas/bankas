@@ -59,7 +59,7 @@ const AccountList = ({ accounts, setAccount }) => {
             acc.id === id
                 ? {
                       ...acc,
-                      sum: acc.sum + +acc.enteredAmount,
+                      sum: +(acc.sum + +acc.enteredAmount).toFixed(2),
                       enteredAmount: '',
                   }
                 : acc
@@ -75,7 +75,7 @@ const AccountList = ({ accounts, setAccount }) => {
                 acc.id === id
                     ? {
                           ...acc,
-                          sum: acc.sum - +acc.enteredAmount,
+                          sum: +(acc.sum - +acc.enteredAmount).toFixed(2),
                           enteredAmount: '',
                       }
                     : acc
@@ -137,7 +137,7 @@ const AccountList = ({ accounts, setAccount }) => {
                                       {acc.name} {acc.lastName}
                                   </p>
                                   <p className='text-gray-700 font-bold mb-4'>
-                                      ${acc.sum.toFixed(2)}
+                                      ${acc.sum}
                                   </p>
                                   <div className='w-full flex flex-row items-center justify-between'>
                                       <button
