@@ -3,9 +3,31 @@ import AccountFilter from './AccountFilter';
 
 const AccountList = ({ accounts, setAccount }) => {
     const [accountFilter, setAccountFilter] = useState('All');
+    const [showModal, setShowModal] = useState({
+        state: 'hidden',
+        message: null,
+    });
 
     const deleteHandler = (id) => {
-        setAccount((prevState) => prevState.filter((acc) => acc.id !== id));
+        const account = accounts.filter((acc) => acc.id === id);
+        if (account[0].sum > 0) {
+            setShowModal({ state: 'visible', message: 'Account has money' });
+            setTimeout(() => {
+                setShowModal({
+                    state: 'hidden',
+                    message: '',
+                });
+            }, 1000);
+        } else {
+            setAccount((prevState) => prevState.filter((acc) => acc.id !== id));
+            setShowModal({ state: 'visible', message: 'Deleted' });
+            setTimeout(() => {
+                setShowModal({
+                    state: 'hidden',
+                    message: '',
+                });
+            }, 1000);
+        }
     };
 
     const sumHandler = (e) => {
@@ -60,6 +82,9 @@ const AccountList = ({ accounts, setAccount }) => {
     return (
         <>
             <AccountFilter filterHandler={filterHandler} />
+            <div className={showModal.state}>
+                <p>{showModal.message}</p>
+            </div>
             <div className='container flex flex-wrap gap-4 relative justify-center'>
                 {filteredAccounts.length > 0
                     ? filteredAccounts
