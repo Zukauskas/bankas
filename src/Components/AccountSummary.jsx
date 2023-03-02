@@ -5,9 +5,12 @@ const AccountSummary = ({ accounts }) => {
     );
 
     return (
-        <div>
-            <p>Total accounts: {accounts.length}</p>
-            <p>Total money: {totalMoney}</p>
+        <div className='mb-4'>
+            <p className='text-gray-700 font-bold'>
+                Total accounts:
+                {accounts.length}
+            </p>
+            <p class='text-gray-700 font-bold'>Total money: {totalMoney}</p>
         </div>
     );
 };

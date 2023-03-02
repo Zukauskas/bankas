@@ -18,12 +18,31 @@ const AddNewAccount = ({ addAccount }) => {
     };
 
     return (
-        <form onSubmit={dataHandler}>
-            <label htmlFor="name">Name</label>
-            <input type="text" id="name" onChange={nameHandler} />
-            <label htmlFor="lastName">Last Name</label>
-            <input type="text" id="lastName" onChange={lastNameHandler} />
-            <button type="submit">Add Account</button>
+        <form onSubmit={dataHandler} className='flex mb-4'>
+            <label htmlFor='name' className='mr-2'>
+                Name
+            </label>
+            <input
+                className='border border-gray-400 rounded py-2 px-4'
+                type='text'
+                id='name'
+                onChange={nameHandler}
+            />
+            <label htmlFor='lastName' className='mx-2'>
+                Last Name
+            </label>
+            <input
+                className='border border-gray-400 rounded py-2 px-4'
+                type='text'
+                id='lastName'
+                onChange={lastNameHandler}
+            />
+            <button
+                className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ml-4'
+                type='submit'
+            >
+                Add Account
+            </button>
         </form>
     );
 };

@@ -21,7 +21,7 @@ function App() {
     }, [account]);
 
     return (
-        <div className="App">
+        <div className="App container mx-auto flex justify-center gap-4 flex-col">
             <AccountSummary accounts={account} />
             <AddNewAccount addAccount={accountHandler} />
             <AccountList accounts={account} setAccount={setAccount} />

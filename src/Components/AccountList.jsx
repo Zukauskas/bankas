@@ -48,43 +48,75 @@ const AccountList = ({ accounts, setAccount }) => {
 
     return (
         <>
-            <label htmlFor="account">Accounts:</label>
-            <select name="account" id="account" onChange={filterHandler}>
-                <option value="All">All</option>
-                <option value="withMoney">With Money</option>
-                <option value="noMoney">No Money</option>
+            <label
+                htmlFor='account-select'
+                className='block mb-2 font-bold text-gray-700'
+            >
+                Accounts:
+            </label>
+            <select
+                name='account'
+                onChange={filterHandler}
+                className='border border-gray-400 rounded py-2 px-4 mb-4'
+            >
+                <option value='All'>All</option>
+                <option value='withMoney'>With Money</option>
+                <option value='noMoney'>No Money</option>
             </select>
-            {[...accounts]
-                .sort((a, b) => a.lastName.localeCompare(b.lastName))
-                .filter((acc) =>
-                    accountFilter === 'withMoney'
-                        ? acc.sum > 0
-                        : accountFilter === 'noMoney'
-                        ? acc.sum === 0
-                        : true
-                )
-                .map((acc) => (
-                    <div key={acc.id}>
-                        <p>{acc.name}</p>
-                        <p>{acc.lastName}</p>
-                        <p>{acc.sum}</p>
-                        <button onClick={() => deleteHandler(acc.id)}>
-                            Delete Account
-                        </button>
-                        <input
-                            type="number"
-                            id={acc.id}
-                            onChange={sumHandler}
-                            value={acc.enteredAmount}
-                        />
-                        <button onClick={() => depositHandler(acc.id)}>
-                            Deposit
-                        </button>
-                        <button onClick={() => withdrawHandler(acc.id)}>
-                            Withdraw
-                        </button>
-                    </div>
-                ))}
+            <div className='accounts-list'>
+                {[...accounts]
+                    .sort((a, b) => a.lastName.localeCompare(b.lastName))
+                    .filter((acc) =>
+                        accountFilter === 'withMoney'
+                            ? acc.sum > 0
+                            : accountFilter === 'noMoney'
+                            ? acc.sum === 0
+                            : true
+                    )
+                    .map((acc) => (
+                        <div
+                            key={acc.id}
+                            className='bg-white shadow-md rounded px-8 py-6 mb-4'
+                        >
+                            <p className='font-bold text-gray-700 mb-2'>
+                                {acc.name}
+                            </p>
+                            <p className='text-gray-700 mb-2'>{acc.lastName}</p>
+                            <p className='text-gray-700 font-bold mb-2'>
+                                ${acc.sum}
+                            </p>
+                            <div className='flex items-center'>
+                                <button
+                                    className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2'
+                                    onClick={() => deleteHandler(acc.id)}
+                                >
+                                    Delete Account
+                                </button>
+                                <input
+                                    type='number'
+                                    id={acc.id}
+                                    onChange={sumHandler}
+                                    value={acc.enteredAmount}
+                                    className='border border-gray-400 rounded py-2 px-4'
+                                    min={0}
+                                    step='0.01'
+                                />
+                                <button
+                                    className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded ml-2 deposit-button'
+                                    onClick={() => depositHandler(acc.id)}
+                                >
+                                    Deposit
+                                </button>
+                                <button
+                                    className='bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded ml-2 withdraw-button'
+                                    onClick={() => withdrawHandler(acc.id)}
+                                >
+                                    Withdraw
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+            </div>
         </>
     );
 };
