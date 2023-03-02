@@ -5,7 +5,7 @@ const AccountSummary = ({ accounts }) => {
     );
 
     return (
-        <div className='mb-8 flex items-center'>
+        <div className='mb-8 flex flex-col items-center'>
             <h2 className='text-3xl font-bold mr-4 text-gray-900'>
                 Bank Summary
             </h2>
