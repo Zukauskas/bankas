@@ -65,7 +65,7 @@ const AccountList = ({ accounts, setAccount }) => {
                     <option value='noMoney'>No Money</option>
                 </select>
             </div>
-            <div className='container flex '>
+            <div className='container flex flex-wrap gap-4'>
                 {[...accounts]
                     .sort((a, b) => a.lastName.localeCompare(b.lastName))
                     .filter((acc) =>
@@ -78,7 +78,7 @@ const AccountList = ({ accounts, setAccount }) => {
                     .map((acc) => (
                         <div
                             key={acc.id}
-                            className='bg-white shadow-md rounded px-8 py-6 mb-4  relative'
+                            className='bg-white shadow-md rounded px-8 py-6 mb-4 relative'
                         >
                             <img
                                 src='./src/assets/racoon.png'

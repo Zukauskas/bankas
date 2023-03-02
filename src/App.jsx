@@ -21,7 +21,7 @@ function App() {
     }, [account]);
 
     return (
-        <div className='App mx-auto flex justify-center gap-4 flex-col'>
+        <div className='App mx-auto flex gap-4 flex-col items-center'>
             <AccountSummary accounts={account} />
             <AddNewAccount addAccount={accountHandler} />
             <AccountList accounts={account} setAccount={setAccount} />

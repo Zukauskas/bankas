@@ -18,34 +18,39 @@ const AddNewAccount = ({ addAccount }) => {
     };
 
     return (
-        <form onSubmit={dataHandler} className='flex mb-4 flex-col gap-4'>
-            <label htmlFor='name' className='mr-2'>
-                Name
-            </label>
-            <input
-                className='border border-gray-400 rounded py-2 px-4'
-                type='text'
-                id='name'
-                onChange={nameHandler}
-                required
-            />
-            <label htmlFor='lastName' className='mx-2'>
-                Last Name
-            </label>
-            <input
-                className='border border-gray-400 rounded py-2 px-4'
-                type='text'
-                id='lastName'
-                onChange={lastNameHandler}
-                required
-            />
-            <button
-                className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ml-4'
-                type='submit'
+        <div className='flex items-center justify-center'>
+            <form
+                onSubmit={dataHandler}
+                className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'
             >
-                Add Account
-            </button>
-        </form>
+                <label htmlFor='name' className='mr-2'>
+                    Name
+                </label>
+                <input
+                    className='border border-gray-400 rounded py-2 px-4'
+                    type='text'
+                    id='name'
+                    onChange={nameHandler}
+                    required
+                />
+                <label htmlFor='lastName' className='mx-2'>
+                    Last Name
+                </label>
+                <input
+                    className='border border-gray-400 rounded py-2 px-4'
+                    type='text'
+                    id='lastName'
+                    onChange={lastNameHandler}
+                    required
+                />
+                <button
+                    className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ml-4'
+                    type='submit'
+                >
+                    Add Account
+                </button>
+            </form>
+        </div>
     );
 };
 
