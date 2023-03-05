@@ -1,66 +1,88 @@
-import { useReducer } from 'react';
+import { useState, useReducer, useEffect } from 'react';
 
-const initialState = {
-    firstName: '',
-    lastName: '',
-    errors: {
-        firstName: '',
-        lastName: '',
-    },
+const nameReducer = (state, action) => {
+    if (action.type === 'USER_INPUT') {
+        return {
+            value: action.val,
+            isValid: action.val.trim().length > 3 && !/\d/.test(action.val),
+        };
+    }
+    if (action.type === 'INPUT_BLUR') {
+        return {
+            value: state.value,
+            isValid: state.value.trim().length > 3 && !/\d/.test(action.value),
+        };
+    }
+    return { value: '', isValid: undefined };
 };
 
-function reducer(state, action) {
-    switch (action.type) {
-        case 'setFirstName':
-            return {
-                ...state,
-                firstName: action.payload,
-                errors: {
-                    ...state.errors,
-                    firstName:
-                        action.payload.trim().length < 3 ||
-                        /\d/.test(action.payload)
-                            ? 'Name is not valid'
-                            : '',
-                },
-            };
-
-        case 'setLastName':
-            return {
-                ...state,
-                lastName: action.payload,
-                errors: {
-                    ...state.errors,
-                    lastName:
-                        action.payload.trim().length < 3 ||
-                        /\d/.test(action.payload)
-                            ? 'Last name is not valid'
-                            : '',
-                },
-            };
-
-        default:
-            return state;
+const lastNameReducer = (state, action) => {
+    if (action.type === 'USER_INPUT') {
+        return {
+            value: action.val,
+            isValid: action.val.trim().length > 3 && !/\d/.test(action.val),
+        };
     }
-}
+    if (action.type === 'INPUT_BLUR') {
+        return {
+            value: state.value,
+            isValid: state.value.trim().length > 3 && !/\d/.test(action.value),
+        };
+    }
+    return { value: '', isValid: undefined };
+};
 
 const AddNewAccount = ({ addAccount }) => {
-    const [state, dispatch] = useReducer(reducer, initialState);
+    const [formIsValid, setFormIsValid] = useState(false);
+
+    const [nameState, dispatchName] = useReducer(nameReducer, {
+        value: '',
+        isValid: undefined,
+    });
+    const [lastNameState, dispatchLastName] = useReducer(lastNameReducer, {
+        value: '',
+        isValid: undefined,
+    });
+
+    let { isValid: nameIsValid } = nameState;
+    let { isValid: lastNameIsValid } = lastNameState;
 
     function handleNameChange(event) {
-        dispatch({ type: 'setFirstName', payload: event.target.value });
+        dispatchName({ type: 'USER_INPUT', val: event.target.value });
     }
 
     function handleLastNameChange(event) {
-        dispatch({ type: 'setLastName', payload: event.target.value });
+        dispatchLastName({ type: 'USER_INPUT', val: event.target.value });
     }
+
+    const validateNameHandler = () => {
+        dispatchName({ type: 'INPUT_BLUR' });
+    };
+
+    const validateLastNameHandler = () => {
+        dispatchLastName({ type: 'INPUT_BLUR' });
+    };
+
+    useEffect(() => {
+        const identifier = setTimeout(() => {
+            setFormIsValid(nameIsValid && lastNameIsValid);
+        }, 300);
+
+        return () => {
+            clearTimeout(identifier);
+        };
+    }, [nameIsValid, lastNameIsValid]);
 
     const dataHandler = (event) => {
         event.preventDefault();
-        if (!state.errors.firstName && !state.errors.lastName) {
-            addAccount(state.firstName, state.lastName);
-            state.firstName = '';
-            state.lastName = '';
+        if (nameIsValid && lastNameIsValid) {
+            addAccount(nameState.value, lastNameState.value);
+
+            dispatchName(nameReducer, { value: '', isValid: undefined });
+            dispatchLastName(lastNameReducer, {
+                value: '',
+                isValid: undefined,
+            });
         }
     };
 
@@ -73,18 +95,18 @@ const AddNewAccount = ({ addAccount }) => {
                 Name
             </label>
             <input
-                className='border border-gray-400 rounded py-2 px-4 w-full'
+                className={`border ${
+                    nameIsValid === false
+                        ? 'border-red-600 bg-red-300'
+                        : 'border-gray-400'
+                } rounded py-2 px-4 w-full`}
                 type='text'
                 id='name'
-                value={state.firstName}
+                value={nameState.value}
                 onChange={handleNameChange}
+                onBlur={validateNameHandler}
                 required
             />
-            {state.errors.firstName && (
-                <span className='absolute text-red-500 left-0 bottom-0'>
-                    {state.errors.firstName}
-                </span>
-            )}
             <label
                 htmlFor='lastName'
                 className='mx-2 self-start lg:self-center whitespace-nowrap'
@@ -92,19 +114,26 @@ const AddNewAccount = ({ addAccount }) => {
                 Last Name
             </label>
             <input
-                className='border border-gray-400 rounded py-2 px-4 w-full'
+                className={`border ${
+                    lastNameIsValid === false
+                        ? 'border-red-600 bg-red-300'
+                        : 'border-gray-400'
+                } rounded py-2 px-4 w-full`}
                 type='text'
                 id='lastName'
-                value={state.lastName}
+                value={lastNameState.value}
                 onChange={handleLastNameChange}
+                onBlur={validateLastNameHandler}
                 required
             />
-            {state.errors.lastName && (
-                <span style={{ color: 'red' }}>{state.errors.lastName}</span>
-            )}
             <button
-                className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 w-full rounded whitespace-nowrap'
+                className={`${
+                    formIsValid
+                        ? 'bg-blue-500 hover:bg-blue-600'
+                        : 'bg-gray-400'
+                } text-white font-bold py-2 px-4 w-full rounded whitespace-nowrap`}
                 type='submit'
+                disabled={!formIsValid}
             >
                 Add Account
             </button>
