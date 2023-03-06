@@ -4,13 +4,13 @@ const nameReducer = (state, action) => {
     if (action.type === 'USER_INPUT') {
         return {
             value: action.val,
-            isValid: action.val.trim().length > 3 && !/\d/.test(action.val),
+            isValid: action.val.trim().length >= 3 && !/\d/.test(action.val),
         };
     }
     if (action.type === 'INPUT_BLUR') {
         return {
             value: state.value,
-            isValid: state.value.trim().length > 3 && !/\d/.test(action.value),
+            isValid: state.value.trim().length >= 3 && !/\d/.test(state.value),
         };
     }
     return { value: '', isValid: undefined };
@@ -20,13 +20,13 @@ const lastNameReducer = (state, action) => {
     if (action.type === 'USER_INPUT') {
         return {
             value: action.val,
-            isValid: action.val.trim().length > 3 && !/\d/.test(action.val),
+            isValid: action.val.trim().length >= 3 && !/\d/.test(action.val),
         };
     }
     if (action.type === 'INPUT_BLUR') {
         return {
             value: state.value,
-            isValid: state.value.trim().length > 3 && !/\d/.test(action.value),
+            isValid: state.value.trim().length >= 3 && !/\d/.test(state.value),
         };
     }
     return { value: '', isValid: undefined };
@@ -95,7 +95,7 @@ const AddNewAccount = ({ addAccount }) => {
                 htmlFor='name'
                 className={`mr-2 self-start lg:self-center  whitespace-nowrap relative ${
                     nameIsValid === false
-                        ? `after:content-['-_Only_letters_are_valid'] after:block after:absolute after:left-16 after:-bottom-9 after:text-red-600 `
+                        ? `after:content-['Only_3_or_more_letters_are_valid'] after:block after:absolute after:left-16 after:-bottom-9 after:text-red-600 `
                         : ''
                 }`}
             >
@@ -118,7 +118,7 @@ const AddNewAccount = ({ addAccount }) => {
                 htmlFor='lastName'
                 className={`mx-2 self-start lg:self-center whitespace-nowrap relative ${
                     lastNameIsValid === false
-                        ? `after:content-['-_Only_letters_are_valid'] after:block after:absolute after:-right-48 after:-bottom-9 after:text-red-600 `
+                        ? `after:content-['Only_3_or_more_letters_are_valid'] after:block after:absolute after:-right-60 after:-bottom-9 after:text-red-600 `
                         : ''
                 }`}
             >
