@@ -44,8 +44,8 @@ const AddNewAccount = ({ addAccount }) => {
         isValid: undefined,
     });
 
-    let { isValid: nameIsValid } = nameState;
-    let { isValid: lastNameIsValid } = lastNameState;
+    const { isValid: nameIsValid } = nameState;
+    const { isValid: lastNameIsValid } = lastNameState;
 
     function handleNameChange(event) {
         dispatchName({ type: 'USER_INPUT', val: event.target.value });
@@ -91,7 +91,14 @@ const AddNewAccount = ({ addAccount }) => {
             onSubmit={dataHandler}
             className='flex justify-center items-center flex-col gap-4 w-full sm:w-10/12 md:w-8/12 lg:w-7/12 2xl:w-6/12 lg:flex-row bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 relative'
         >
-            <label htmlFor='name' className='mr-2 self-start lg:self-center'>
+            <label
+                htmlFor='name'
+                className={`mr-2 self-start lg:self-center  whitespace-nowrap relative ${
+                    nameIsValid === false
+                        ? `after:content-['-_Only_letters_are_valid'] after:block after:absolute after:left-16 after:-bottom-9 after:text-red-600 `
+                        : ''
+                }`}
+            >
                 Name
             </label>
             <input
@@ -109,7 +116,11 @@ const AddNewAccount = ({ addAccount }) => {
             />
             <label
                 htmlFor='lastName'
-                className='mx-2 self-start lg:self-center whitespace-nowrap'
+                className={`mx-2 self-start lg:self-center whitespace-nowrap relative ${
+                    lastNameIsValid === false
+                        ? `after:content-['-_Only_letters_are_valid'] after:block after:absolute after:-right-48 after:-bottom-9 after:text-red-600 `
+                        : ''
+                }`}
             >
                 Last Name
             </label>
@@ -118,7 +129,7 @@ const AddNewAccount = ({ addAccount }) => {
                     lastNameIsValid === false
                         ? 'border-red-600 bg-red-300'
                         : 'border-gray-400'
-                } rounded py-2 px-4 w-full`}
+                } rounded py-2 px-4 w-full `}
                 type='text'
                 id='lastName'
                 value={lastNameState.value}
