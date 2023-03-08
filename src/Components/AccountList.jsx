@@ -9,6 +9,11 @@ const AccountList = ({ accounts, setAccount }) => {
         color: '',
     });
 
+    const [enteredAmount, setEnteredAmount] = useState({
+        id: null,
+        amount: '',
+    });
+
     const deleteHandler = (id) => {
         const account = accounts.filter((acc) => acc.id === id);
         if (account[0].sum > 0) {
@@ -25,7 +30,9 @@ const AccountList = ({ accounts, setAccount }) => {
                 });
             }, 2000);
         } else {
-            setAccount((prevState) => prevState.filter((acc) => acc.id !== id));
+            
+            setAccount((prevState) =>
+                prevState.filter((acc) => acc.id !== id));
             setShowModal({
                 state: 'visible',
                 message: 'Account deleted',
@@ -42,45 +49,53 @@ const AccountList = ({ accounts, setAccount }) => {
     };
 
     const sumHandler = (e) => {
-        let enteredSum = e.target.value;
+        setEnteredAmount({
+            id: e.target.id,
+            amount: e.target.value,
+        });
 
-        if (+enteredSum >= 0 || !e.target.value) {
-            let updatedMoney = accounts.map((acc) =>
-                acc.id === +e.target.id
-                    ? { ...acc, enteredAmount: enteredSum }
-                    : acc
-            );
-            setAccount(updatedMoney);
-        }
-    };
+       };
 
     const depositHandler = (id) => {
+        if (+enteredAmount.id === id) {
         let updatedMoney = accounts.map((acc) =>
             acc.id === id
                 ? {
                       ...acc,
-                      sum: +(acc.sum + +acc.enteredAmount).toFixed(2),
-                      enteredAmount: '',
+                      sum: +(acc.sum + +enteredAmount.amount).toFixed(2),
+                      
                   }
                 : acc
         );
         setAccount(updatedMoney);
+        setEnteredAmount({
+            id: null,
+            amount: '',
+        });
+        }
     };
 
     const withdrawHandler = (id) => {
+        if (+enteredAmount.id === id) {
+
         const account = accounts.filter((acc) => acc.id === id);
 
-        if (+account[0].enteredAmount <= account[0].sum) {
+        if (+enteredAmount.amount <= account[0].sum) {
             let updatedMoney = accounts.map((acc) =>
                 acc.id === id
                     ? {
                           ...acc,
-                          sum: +(acc.sum - +acc.enteredAmount).toFixed(2),
-                          enteredAmount: '',
+                          sum: +(acc.sum - +enteredAmount.amount).toFixed(2),
+                          
                       }
                     : acc
             );
             setAccount(updatedMoney);
+            setEnteredAmount({
+                id: null,
+                amount: '',
+            });
+
         } else {
             setShowModal({
                 state: 'visible',
@@ -95,6 +110,7 @@ const AccountList = ({ accounts, setAccount }) => {
                 });
             }, 2000);
         }
+        }
     };
 
     const filterHandler = (e) => {
@@ -108,8 +124,7 @@ const AccountList = ({ accounts, setAccount }) => {
             ? acc.sum === 0
             : true
     );
-
-    const empty = <p>No accounts to show</p>;
+      const empty = <p>No accounts to show</p>;
 
     return (
         <>
@@ -151,7 +166,7 @@ const AccountList = ({ accounts, setAccount }) => {
                                               type='number'
                                               id={acc.id}
                                               onChange={sumHandler}
-                                              value={acc.enteredAmount}
+                                              value={acc.id === +enteredAmount.id ? enteredAmount.amount : ''}
                                               className='border border-gray-400 rounded py-2 px-4 w-24'
                                               min={0}
                                               step='0.01'
