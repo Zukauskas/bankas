@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import AccountFilter from './AccountFilter';
 
-const AccountList = ({ accounts, setAccount }) => {
+const AccountList = ({ accounts, setSumChanged, setDeletedAccount }) => {
     const [accountFilter, setAccountFilter] = useState('All');
     const [showModal, setShowModal] = useState({
         state: 'hidden',
@@ -15,7 +15,7 @@ const AccountList = ({ accounts, setAccount }) => {
     });
 
     const deleteHandler = (id) => {
-        const account = accounts.filter((acc) => acc.id === id);
+        const account = [...accounts].filter((acc) => acc.id === id);
         if (account[0].sum > 0) {
             setShowModal({
                 state: 'visible',
@@ -30,10 +30,8 @@ const AccountList = ({ accounts, setAccount }) => {
                 });
             }, 2000);
         } else {
-            
-            setAccount((prevState) =>
-                prevState.filter((acc) => acc.id !== id));
-            setShowModal({
+                setDeletedAccount(account[0]);
+                setShowModal({
                 state: 'visible',
                 message: 'Account deleted',
                 color: 'bg-green-500',
@@ -51,23 +49,17 @@ const AccountList = ({ accounts, setAccount }) => {
     const sumHandler = (e) => {
         setEnteredAmount({
             id: e.target.id,
-            amount: e.target.value,
+            amount: Math.abs(e.target.value),
         });
 
        };
 
     const depositHandler = (id) => {
-        if (+enteredAmount.id === id) {
-        let updatedMoney = accounts.map((acc) =>
-            acc.id === id
-                ? {
-                      ...acc,
-                      sum: +(acc.sum + +enteredAmount.amount).toFixed(2),
-                      
-                  }
-                : acc
-        );
-        setAccount(updatedMoney);
+        if (enteredAmount.id === id) {
+        const account = accounts.filter((acc) => acc.id === id)[0];
+        
+        setSumChanged({...account, sum: +(account.sum + +enteredAmount.amount).toFixed(2)});
+
         setEnteredAmount({
             id: null,
             amount: '',
@@ -76,21 +68,14 @@ const AccountList = ({ accounts, setAccount }) => {
     };
 
     const withdrawHandler = (id) => {
-        if (+enteredAmount.id === id) {
+        if (enteredAmount.id === id) {
 
         const account = accounts.filter((acc) => acc.id === id);
 
         if (+enteredAmount.amount <= account[0].sum) {
-            let updatedMoney = accounts.map((acc) =>
-                acc.id === id
-                    ? {
-                          ...acc,
-                          sum: +(acc.sum - +enteredAmount.amount).toFixed(2),
-                          
-                      }
-                    : acc
-            );
-            setAccount(updatedMoney);
+           const account = accounts.filter((acc) => acc.id === id)[0];
+            setSumChanged({...account, sum: +(account.sum - +enteredAmount.amount).toFixed(2)});
+
             setEnteredAmount({
                 id: null,
                 amount: '',
@@ -117,13 +102,15 @@ const AccountList = ({ accounts, setAccount }) => {
         setAccountFilter(e.target.value);
     };
 
-    const filteredAccounts = accounts.filter((acc) =>
+    const filteredAccounts = accounts ? accounts.filter((acc) =>
         accountFilter === 'withMoney'
             ? acc.sum > 0
             : accountFilter === 'noMoney'
             ? acc.sum === 0
             : true
-    );
+    ) : [];
+
+
       const empty = <p>No accounts to show</p>;
 
     return (
@@ -166,7 +153,7 @@ const AccountList = ({ accounts, setAccount }) => {
                                               type='number'
                                               id={acc.id}
                                               onChange={sumHandler}
-                                              value={acc.id === +enteredAmount.id ? enteredAmount.amount : ''}
+                                              value={acc.id === enteredAmount.id ? enteredAmount.amount : ''}
                                               className='border border-gray-400 rounded py-2 px-4 w-24'
                                               min={0}
                                               step='0.01'

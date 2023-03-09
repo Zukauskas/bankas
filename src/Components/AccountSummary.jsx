@@ -1,8 +1,5 @@
 const AccountSummary = ({ accounts }) => {
-    const totalMoney = accounts.reduce(
-        (total, current) => total + current.sum,
-        0
-    );
+    const totalMoney = accounts ? accounts.reduce((acc, cur) => acc + cur.sum, 0) : 0;
 
     return (
         <div className='mb-8 flex flex-col items-center'>
@@ -13,7 +10,7 @@ const AccountSummary = ({ accounts }) => {
                 <p className='text-lg font-semibold text-gray-700'>
                     Total Accounts:
                     <span className='text-gray-600 ml-2 font-normal'>
-                        {accounts.length}
+                        {accounts ? accounts.length : 0}
                     </span>
                 </p>
                 <p className='text-lg font-semibold text-gray-700'>

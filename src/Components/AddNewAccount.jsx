@@ -76,7 +76,7 @@ const AddNewAccount = ({ addAccount }) => {
     const dataHandler = (event) => {
         event.preventDefault();
         if (nameIsValid && lastNameIsValid) {
-            addAccount(nameState.value, lastNameState.value);
+            addAccount({name:nameState.value, lastName:lastNameState.value});
 
             dispatchName(nameReducer, { value: '', isValid: undefined });
             dispatchLastName(lastNameReducer, {

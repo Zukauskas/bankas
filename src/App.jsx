@@ -3,56 +3,87 @@ import './App.css';
 import AccountList from './Components/AccountList';
 import AccountSummary from './Components/AccountSummary';
 import AddNewAccount from './Components/AddNewAccount';
-import axios from 'axios';
 
 function App() {
     const [account, setAccount] = useState([]);
+    // new account added state
+    const [newAccount, setNewAccount] = useState(null);
 
-    const accountHandler = (name, lastName) => {
-        setAccount((prevState) => [
-            ...prevState,
-            { name, lastName, id: Math.random(), sum: 0},
-        ]);
-    };
+    // Account deleted state
+    const [deletedAccount, setDeletedAccount] = useState(null);
 
-     useEffect(() => {
-    // Retrieve the account data from the server
-    axios.get('http://localhost:3003/accounts')
-      .then(response => {
-        console.log('Retrieved account data from server:', response.data);
-        setAccount(response.data);
-      })
-      .catch(error => {
-        console.error('Error retrieving account data from server: ', error);
-      });
-  }, []);
+    // Sum changed state
+    const [sumChanged, setSumChanged] = useState(null);
+
+    // Server URL
+    const url = 'http://localhost:3003/accounts';
+
+    //GET
+    
+    useEffect(() => {
+        fetch(url)
+        .then((response) => response.json())
+        .then((data) => setAccount(data));
+    }, []);
+
+
+    //POST
 
     useEffect(() => {
-        if (account === null) {
-            setAccount([]);
-           return console.log('No accounts');
+        if (newAccount) {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newAccount),
+            })
+                .then((response) => response.json())
+                .then((data) => setAccount(data));
+                    }
+    }, [newAccount]);
+[]
+    //DELETE
+
+    useEffect(() => {
+        if (deletedAccount) {
+            fetch(url + '/' + deletedAccount.id, {
+                method: 'DELETE',
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setAccount(data);
+                });
+
         }
-  // Send the updated account data to the Express server
-  axios.post('http://localhost:3003/accounts', account)
-    .then(response => {
-      console.log('Account data sent to server successfully');
-    })
-    .catch(error => {
-      console.error('Error sending account data to server: ', error);
-    });
-
-   }, [account]);
-
-    //useEffect(() => {
-    //    localStorage.setItem('accounts', JSON.stringify(account));
-   // }, [account]);
-
+    }, [deletedAccount]);
+   
+    //PUT     
+    useEffect(() => {
+        if (sumChanged) {
+            fetch(url + '/' + sumChanged.id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(sumChanged),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    const newAccounts = account.map((acc) =>
+                        acc.id === sumChanged.id ? sumChanged : acc
+                    );
+                    setAccount(newAccounts);
+                }
+                );
+        }
+    }, [sumChanged]);
 
     return (
         <div className='App mx-auto flex gap-4 flex-col items-center'>
             <AccountSummary accounts={account} />
-            <AddNewAccount addAccount={accountHandler} />
-            <AccountList accounts={account} setAccount={setAccount} />
+            <AddNewAccount addAccount={setNewAccount} />
+            <AccountList accounts={account} setSumChanged={setSumChanged} setDeletedAccount={setDeletedAccount} />
         </div>
     );
 }

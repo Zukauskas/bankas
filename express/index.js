@@ -1,40 +1,79 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
+const { readFile, writeFile } = require('fs').promises;
+const { v4: uuid } = require('uuid');
+
 const app = express();
-const port = 3003;
-app.use(express.json());
+const PORT = 3003;
+
 app.use(cors());
-// Route to handle POST request at /accounts endpoint
-app.post('/accounts', (req, res) => {
-    const accountData = req.body;
-    console.log('Received account data:', accountData);
 
-    // Write the account data to the accounts.json file
-    fs.writeFile('accounts.json', JSON.stringify(accountData), (err) => {
-        if (err) {
-            console.error('Error writing account data to file: ', err);
-            res.sendStatus(500); // Send a server error status code (500 Internal Server Error) back to the client
-        } else {
-            console.log('Account data written to file successfully');
-            res.sendStatus(200); // Send a success status code (200 OK) back to the client
-        }
-    });
+app.use(express.urlencoded({ extended: true }));
+
+app.use(express.json());
+
+// GET with async/await
+
+app.get('/accounts', async (req, res) => {
+    try {
+        const data = await readFile('./accounts.json', 'utf8');
+        const accounts = JSON.parse(data);
+        res.status(200).send(accounts);
+    } catch (err) {
+        res.status(500).send({ error: err.message });
+    }
 });
 
-app.get('/accounts', (req, res) => {
-    fs.readFile('accounts.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading account data from file: ', err);
-            res.sendStatus(500); // Send a server error status code (500 Internal Server Error) back to the client
-        } else {
-            console.log('Retrieved account data from file successfully');
-            const accounts = JSON.parse(data);
-            res.json(accounts); // Send the retrieved account data back to the client
-        }
-    });
+// POST with async/await
+
+app.post('/accounts', async (req, res) => {
+    try {
+        const data = await readFile('./accounts.json', 'utf8');
+        const accounts = JSON.parse(data);
+        accounts.push({ ...req.body, id: uuid(), sum: 0 });
+        await writeFile('./accounts.json', JSON.stringify(accounts));
+        res.status(200).send(accounts);
+    } catch (err) {
+        res.status(500).send({ error: err.message });
+    }
 });
 
-app.listen(port, () => {
-    console.log(`Bank app listening on port ${port}`);
+// PUT with async/await
+
+app.put('/accounts/:id', async (req, res) => {
+    try {
+        const data = await readFile('./accounts.json', 'utf8');
+        const accounts = JSON.parse(data);
+        const updatedAccounts = accounts.map((account) => {
+            if (+account.id === +req.params.id) {
+                return { ...req.body };
+            }
+            return { ...account };
+        });
+
+        await writeFile('./accounts.json', JSON.stringify(updatedAccounts));
+        res.status(200).send(updatedAccounts);
+    } catch (err) {
+        res.status(500).send({ error: err.message });
+    }
+});
+
+// DELETE with async/await
+
+app.delete('/accounts/:id', async (req, res) => {
+    try {
+        const data = await readFile('./accounts.json', 'utf8');
+        const accounts = JSON.parse(data);
+        const updatedAccounts = accounts.filter(
+            (account) => account.id !== req.params.id
+        );
+        await writeFile('./accounts.json', JSON.stringify(updatedAccounts));
+        res.status(200).send(updatedAccounts);
+    } catch (err) {
+        res.status(500).send({ error: err.message });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
