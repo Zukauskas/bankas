@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const { readFile, writeFile } = require('fs').promises;
 const { v4: uuid } = require('uuid');
+const { celebrate } = require('celebrate');
+const Joi = require('joi');
 
 const app = express();
 const PORT = 3003;
@@ -26,17 +28,28 @@ app.get('/accounts', async (req, res) => {
 
 // POST with async/await
 
-app.post('/accounts', async (req, res) => {
-    try {
-        const data = await readFile('./accounts.json', 'utf8');
-        const accounts = JSON.parse(data);
-        accounts.push({ ...req.body, id: uuid(), sum: 0 });
-        await writeFile('./accounts.json', JSON.stringify(accounts));
-        res.status(200).send(accounts);
-    } catch (err) {
-        res.status(500).send({ error: err.message });
+app.post(
+    '/accounts',
+    celebrate({
+        body: Joi.object({
+            name: Joi.string().required().min(3),
+            lastName: Joi.string().required().min(3),
+        }),
+    }),
+    async (req, res) => {
+        try {
+            const data = await readFile('./accounts.json', 'utf8');
+            const accounts = JSON.parse(data);
+            const { name, lastName } = req.body;
+            console.log(name, lastName);
+            accounts.push({ name, lastName, id: uuid(), sum: 0 });
+            await writeFile('./accounts.json', JSON.stringify(accounts));
+            res.status(200).send(accounts);
+        } catch (err) {
+            res.status(500).send({ error: err.message });
+        }
     }
-});
+);
 
 // PUT with async/await
 
