@@ -32,7 +32,7 @@ const lastNameReducer = (state, action) => {
     return { value: '', isValid: undefined };
 };
 
-const AddNewAccount = ({ addAccount }) => {
+const AddNewAccount = ({ addAccount, setShowModal, showModal }) => {
     const [formIsValid, setFormIsValid] = useState(false);
 
     const [nameState, dispatchName] = useReducer(nameReducer, {
@@ -77,7 +77,18 @@ const AddNewAccount = ({ addAccount }) => {
         event.preventDefault();
         if (nameIsValid && lastNameIsValid) {
             addAccount({name:nameState.value, lastName:lastNameState.value});
-
+             setShowModal({
+                state: 'visible',
+                message: 'New account added',
+                color: 'bg-green-500',
+            });
+            setTimeout(() => {
+                setShowModal({
+                    state: 'hidden',
+                    message: '',
+                    color: '',
+                });
+            }, 2000);
             dispatchName(nameReducer, { value: '', isValid: undefined });
             dispatchLastName(lastNameReducer, {
                 value: '',
@@ -87,7 +98,14 @@ const AddNewAccount = ({ addAccount }) => {
     };
 
     return (
-        <form
+        <>
+        <div
+                className={`${showModal.state} ${showModal.color} w-1/3 px-2 py-4 fixed top-1 text-center rounded-md`}
+            >
+                <p>{showModal.message}</p>
+            </div>
+
+                <form
             onSubmit={dataHandler}
             className='flex justify-center items-center flex-col gap-4 w-full sm:w-10/12 md:w-8/12 lg:w-7/12 2xl:w-6/12 lg:flex-row bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 relative'
         >
@@ -149,6 +167,8 @@ const AddNewAccount = ({ addAccount }) => {
                 Add Account
             </button>
         </form>
+</>
+
     );
 };
 

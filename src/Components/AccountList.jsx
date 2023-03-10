@@ -1,14 +1,9 @@
 import { useState } from 'react';
 import AccountFilter from './AccountFilter';
 
-const AccountList = ({ accounts, setSumChanged, setDeletedAccount }) => {
+const AccountList = ({ accounts, setSumChanged, setDeletedAccount, showModal, setShowModal }) => {
     const [accountFilter, setAccountFilter] = useState('All');
-    const [showModal, setShowModal] = useState({
-        state: 'hidden',
-        message: null,
-        color: '',
-    });
-
+    
     const [enteredAmount, setEnteredAmount] = useState({
         id: null,
         amount: '',

@@ -15,6 +15,13 @@ function App() {
     // Sum changed state
     const [sumChanged, setSumChanged] = useState(null);
 
+    const [showModal, setShowModal] = useState({
+        state: 'hidden',
+        message: null,
+        color: '',
+    });
+
+
     // Server URL
     const url = 'http://localhost:3003/accounts';
 
@@ -82,8 +89,8 @@ function App() {
     return (
         <div className='App mx-auto flex gap-4 flex-col items-center'>
             <AccountSummary accounts={account} />
-            <AddNewAccount addAccount={setNewAccount} />
-            <AccountList accounts={account} setSumChanged={setSumChanged} setDeletedAccount={setDeletedAccount} />
+            <AddNewAccount addAccount={setNewAccount} showModal={showModal} setShowModal={setShowModal} />
+            <AccountList accounts={account} setSumChanged={setSumChanged} setDeletedAccount={setDeletedAccount} showModal={showModal} setShowModal={setShowModal} />
         </div>
     );
 }
