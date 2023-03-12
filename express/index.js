@@ -58,13 +58,15 @@ app.put('/accounts/:id', async (req, res) => {
         const data = await readFile('./accounts.json', 'utf8');
         const accounts = JSON.parse(data);
         const updatedAccounts = accounts.map((account) => {
-            if (+account.id === +req.params.id) {
-                return { ...req.body };
+            if (account.id === req.params.id) {
+                                return { ...req.body };
             }
             return { ...account };
         });
 
-        await writeFile('./accounts.json', JSON.stringify(updatedAccounts));
+        await writeFile('./accounts.json', JSON.stringify(updatedAccounts))
+        console.log(updatedAccounts)
+;
         res.status(200).send(updatedAccounts);
     } catch (err) {
         res.status(500).send({ error: err.message });

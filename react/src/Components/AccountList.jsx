@@ -29,7 +29,7 @@ const AccountList = ({ accounts, setSumChanged, setDeletedAccount, showModal, se
                 setShowModal({
                 state: 'visible',
                 message: 'Account deleted',
-                color: 'bg-green-500',
+                color: 'bg-orange-500',
             });
             setTimeout(() => {
                 setShowModal({
