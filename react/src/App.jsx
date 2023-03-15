@@ -15,24 +15,23 @@ function App() {
     // Sum changed state
     const [sumChanged, setSumChanged] = useState(null);
 
+    // Modal state
     const [showModal, setShowModal] = useState({
         state: 'hidden',
         message: null,
         color: '',
     });
 
-
     // Server URL
     const url = 'http://localhost:3003/accounts';
 
     //GET
-    
+
     useEffect(() => {
         fetch(url)
-        .then((response) => response.json())
-        .then((data) => setAccount(data));
+            .then((response) => response.json())
+            .then((data) => setAccount(data));
     }, []);
-
 
     //POST
 
@@ -47,9 +46,9 @@ function App() {
             })
                 .then((response) => response.json())
                 .then((data) => setAccount(data));
-                    }
+        }
     }, [newAccount]);
-[]
+    [];
     //DELETE
 
     useEffect(() => {
@@ -58,14 +57,11 @@ function App() {
                 method: 'DELETE',
             })
                 .then((response) => response.json())
-                .then((data) => {
-                    setAccount(data);
-                });
-
+                .then((data) => setAccount(data));
         }
     }, [deletedAccount]);
-   
-    //PUT     
+
+    //PUT
     useEffect(() => {
         if (sumChanged) {
             fetch(url + '/' + sumChanged.id, {
@@ -76,21 +72,25 @@ function App() {
                 body: JSON.stringify(sumChanged),
             })
                 .then((response) => response.json())
-                .then((data) => {
-                    const newAccounts = account.map((acc) =>
-                        acc.id === sumChanged.id ? sumChanged : acc
-                    );
-                    setAccount(newAccounts);
-                }
-                );
+                .then((data) => setAccount(data));
         }
     }, [sumChanged]);
 
     return (
         <div className='App mx-auto flex gap-4 flex-col items-center'>
             <AccountSummary accounts={account} />
-            <AddNewAccount addAccount={setNewAccount} showModal={showModal} setShowModal={setShowModal} />
-            <AccountList accounts={account} setSumChanged={setSumChanged} setDeletedAccount={setDeletedAccount} showModal={showModal} setShowModal={setShowModal} />
+            <AddNewAccount
+                addAccount={setNewAccount}
+                showModal={showModal}
+                setShowModal={setShowModal}
+            />
+            <AccountList
+                accounts={account}
+                setSumChanged={setSumChanged}
+                setDeletedAccount={setDeletedAccount}
+                showModal={showModal}
+                setShowModal={setShowModal}
+            />
         </div>
     );
 }

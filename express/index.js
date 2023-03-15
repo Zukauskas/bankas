@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 
-// GET with async/await
+// GET
 
 app.get('/accounts', async (req, res) => {
     try {
@@ -26,7 +26,7 @@ app.get('/accounts', async (req, res) => {
     }
 });
 
-// POST with async/await
+// POST
 
 app.post(
     '/accounts',
@@ -44,14 +44,14 @@ app.post(
             console.log(name, lastName);
             accounts.push({ name, lastName, id: uuid(), sum: 0 });
             await writeFile('./accounts.json', JSON.stringify(accounts));
-            res.status(200).send(accounts);
+            res.status(201).send(accounts);
         } catch (err) {
             res.status(500).send({ error: err.message });
         }
     }
 );
 
-// PUT with async/await
+// PUT
 
 app.put('/accounts/:id', async (req, res) => {
     try {
@@ -59,21 +59,21 @@ app.put('/accounts/:id', async (req, res) => {
         const accounts = JSON.parse(data);
         const updatedAccounts = accounts.map((account) => {
             if (account.id === req.params.id) {
-                                return { ...req.body };
+                return { ...req.body };
             }
             return { ...account };
         });
 
         await writeFile('./accounts.json', JSON.stringify(updatedAccounts))
         console.log(updatedAccounts)
-;
+            ;
         res.status(200).send(updatedAccounts);
     } catch (err) {
         res.status(500).send({ error: err.message });
     }
 });
 
-// DELETE with async/await
+// DELETE
 
 app.delete('/accounts/:id', async (req, res) => {
     try {
