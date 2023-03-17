@@ -115,7 +115,11 @@ app.post('/login', async (req, res) => {
 
             await writeFile('./data/users.json', JSON.stringify(updatedUsers));
 
-            res.cookie('bankSession', tokenID);
+            res.cookie('bankSession', tokenID, {
+                sameSite: 'None',
+                secure: true,
+                httpOnly: true,
+            });
             res.status(200).send({
                 message: 'Login success',
                 name: user.name
@@ -153,12 +157,24 @@ app.get('/login', async (req, res) => {
 
 app.post('/logout', async (req, res) => {
     try {
-        res.cookie('bankSession', '', { maxAge: -3600 });
+        const users = await readFile('./data/users.json', 'utf8');
+        const token = req.cookies.bankSession;
+        const updatedUsers = JSON.parse(users).map((user) => {
+            if (user.token === token) {
+                return { ...user, token: null };
+            }
+            return { ...user };
+        });
+
+        await writeFile('./data/users.json', JSON.stringify(updatedUsers));
+        res.clearCookie('bankSession');
         res.status(200).send({ message: 'Logout success' });
     } catch (err) {
         res.status(500).send({ error: err.message });
     }
 });
+
+
 
 
 app.listen(PORT, () => {
