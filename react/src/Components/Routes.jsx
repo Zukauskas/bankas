@@ -3,7 +3,7 @@ import Auth from './Auth';
 import { Global } from './Global';
 import Login from './Login';
 import Bank from './Bank';
-import AccountSummary from './AccountSummary';
+import AccountSummary from './Account/AccountSummary';
 
 function Routes({
   accounts,
