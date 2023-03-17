@@ -1,6 +1,6 @@
-import AccountList from './AccountList';
-import AccountSummary from './AccountSummary';
-import AddNewAccount from './AddNewAccount';
+import AccountList from './Account/AccountList';
+import AccountSummary from './Account/AccountSummary';
+import AddNewAccount from './Account/AddNewAccount';
 
 const Bank = ({
   accounts,
