@@ -40,53 +40,63 @@ function Login() {
   };
 
   return (
-    <div className=''>
-      <div className=''>
-        <div className=''>
-          <div className=''>
-            <div className=''>
-              {error ? (
-                <span
-                  style={{
-                    color: 'crimson',
-                  }}>
-                  Login error
-                </span>
-              ) : (
-                <span>Login</span>
-              )}
-            </div>
-            <div className=''>
-              <h5 className=''>
+    <div className='container mx-auto'>
+      <div className='flex justify-center px-6 my-12'>
+        <div className='w-full xl:w-3/4 lg:w-11/12 flex'>
+          <div className='w-full lg:w-1/2 bg-white p-5 rounded-lg lg:rounded-l-none'>
+            {error ? (
+              <h3 className='pt-4 text-2xl text-center text-red-500'>
+                Login Failed!
+              </h3>
+            ) : (
+              <h3 className='pt-4 text-2xl text-center'>
                 {userName ? (
                   <span>Hello, {userName}</span>
                 ) : (
                   <span>Hello, guest</span>
                 )}
-              </h5>
-              <div className=''>
-                <label className=''>Name</label>
+              </h3>
+            )}
+            <form className='px-8 pt-6 pb-8 mb-4 bg-white rounded'>
+              <div className='mb-4'>
+                <label
+                  className='block mb-2 text-sm font-bold text-gray-700'
+                  htmlFor='username'>
+                  Name
+                </label>
                 <input
+                  className='w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline'
+                  id='username'
                   type='text'
-                  className=''
                   value={name}
                   onChange={e => setName(e.target.value)}
                 />
               </div>
-              <div className=''>
-                <label className=''>Password</label>
+              <div className='mb-4'>
+                <label
+                  className='block mb-2 text-sm font-bold text-gray-700'
+                  htmlFor='password'>
+                  Password
+                </label>
                 <input
+                  className='w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline'
+                  id='password'
                   type='password'
-                  className=''
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                 />
               </div>
-              <button className='' onClick={login}>
-                Login
-              </button>
-            </div>
+              <div className='mb-6 text-center'>
+                <button
+                  className='w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline'
+                  type='button'
+                  onClick={login}>
+                  Login
+                </button>
+              </div>
+            </form>
           </div>
+          <div className='w-full h-auto bg-gray-400 hidden lg:block lg:w-1/2 bg-cover bg-top bg-no-repeat rounded-r-lg bg-[url(./bg-racoon.jpg)] '></div>
         </div>
       </div>
     </div>
