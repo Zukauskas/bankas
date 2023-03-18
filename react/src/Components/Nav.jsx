@@ -11,7 +11,7 @@ function Nav() {
           className='flex items-center  cursor-pointer'
           onClick={() => setRoute('home')}>
           <img
-            src='../../public/racoon.png'
+            src='/racoon.png'
             className='h-6 mr-3 sm:h-9'
             alt='Racoon Logo'
           />
@@ -46,7 +46,7 @@ function Nav() {
               <div className='flex items-center gap-2'>
                 <img
                   className='w-8 h-8 rounded-full'
-                  src='../../public/racoon.png'
+                  src='/racoon.png'
                   alt='user photo'
                 />
                 <span className=' text-white'>{authName}</span>
