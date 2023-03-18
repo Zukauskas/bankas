@@ -19,28 +19,28 @@ function Nav() {
             Racoon Bank
           </span>
         </div>
-        <div className='flex gap-2'>
-          <span
-            onClick={() => setRoute('home')}
-            className={
-              'cursor-pointer ' +
-              (route === 'home' ? ' text-blue-300' : 'text-white')
-            }>
-            Home
-          </span>
-          {authName ? (
+        <div className='flex items-center gap-5 md:order-2'>
+          <div className='flex gap-3'>
             <span
-              onClick={() => setRoute('accounts')}
+              onClick={() => setRoute('home')}
               className={
                 'cursor-pointer ' +
-                (route === 'accounts' ? ' text-blue-300' : 'text-white ')
+                (route === 'home' ? ' text-blue-300' : 'text-white')
               }>
-              Accounts
+              Home
             </span>
-          ) : null}
-        </div>
-
-        <div className='flex items-center gap-5 md:order-2'>
+            {authName ? (
+              <span
+                onClick={() => setRoute('accounts')}
+                className={
+                  'cursor-pointer ' +
+                  (route === 'accounts' ? ' text-blue-300' : 'text-white ')
+                }>
+                Accounts
+              </span>
+            ) : null}
+          </div>
+          <div className='text-white'>|</div>
           {authName ? (
             <>
               <div className='flex items-center gap-2'>
@@ -59,8 +59,8 @@ function Nav() {
             <span
               onClick={() => setRoute('login')}
               className={
-                ' text-white cursor-pointer' +
-                (route === 'login' ? ' text-blue-300' : '')
+                'cursor-pointer ' +
+                (route === 'login' ? ' text-blue-300' : 'text-white')
               }>
               Login
             </span>
