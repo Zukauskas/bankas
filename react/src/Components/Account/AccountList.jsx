@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import AccountFilter from './AccountFilter';
 
-const AccountList = ({ accounts, setAccount }) => {
+const AccountList = ({ accounts, setSumChanged, setDeletedAccount, showModal, setShowModal }) => {
     const [accountFilter, setAccountFilter] = useState('All');
-    const [showModal, setShowModal] = useState({
-        state: 'hidden',
-        message: null,
-        color: '',
+    
+    const [enteredAmount, setEnteredAmount] = useState({
+        id: null,
+        amount: '',
     });
 
     const deleteHandler = (id) => {
-        const account = accounts.filter((acc) => acc.id === id);
+        const account = [...accounts].filter((acc) => acc.id === id);
         if (account[0].sum > 0) {
             setShowModal({
                 state: 'visible',
@@ -25,11 +25,11 @@ const AccountList = ({ accounts, setAccount }) => {
                 });
             }, 2000);
         } else {
-            setAccount((prevState) => prevState.filter((acc) => acc.id !== id));
-            setShowModal({
+                setDeletedAccount(account[0]);
+                setShowModal({
                 state: 'visible',
                 message: 'Account deleted',
-                color: 'bg-green-500',
+                color: 'bg-orange-500',
             });
             setTimeout(() => {
                 setShowModal({
@@ -42,45 +42,40 @@ const AccountList = ({ accounts, setAccount }) => {
     };
 
     const sumHandler = (e) => {
-        let enteredSum = e.target.value;
+        setEnteredAmount({
+            id: e.target.id,
+            amount: Math.abs(e.target.value),
+        });
 
-        if (+enteredSum >= 0 || !e.target.value) {
-            let updatedMoney = accounts.map((acc) =>
-                acc.id === +e.target.id
-                    ? { ...acc, enteredAmount: enteredSum }
-                    : acc
-            );
-            setAccount(updatedMoney);
+       };
+
+    const depositHandler = (id) => {
+        if (enteredAmount.id === id) {
+        const account = accounts.filter((acc) => acc.id === id)[0];
+        
+        setSumChanged({...account, sum: +(account.sum + +enteredAmount.amount).toFixed(2)});
+
+        setEnteredAmount({
+            id: null,
+            amount: '',
+        });
         }
     };
 
-    const depositHandler = (id) => {
-        let updatedMoney = accounts.map((acc) =>
-            acc.id === id
-                ? {
-                      ...acc,
-                      sum: +(acc.sum + +acc.enteredAmount).toFixed(2),
-                      enteredAmount: '',
-                  }
-                : acc
-        );
-        setAccount(updatedMoney);
-    };
-
     const withdrawHandler = (id) => {
+        if (enteredAmount.id === id) {
+
         const account = accounts.filter((acc) => acc.id === id);
 
-        if (+account[0].enteredAmount <= account[0].sum) {
-            let updatedMoney = accounts.map((acc) =>
-                acc.id === id
-                    ? {
-                          ...acc,
-                          sum: +(acc.sum - +acc.enteredAmount).toFixed(2),
-                          enteredAmount: '',
-                      }
-                    : acc
-            );
-            setAccount(updatedMoney);
+        if (+enteredAmount.amount <= account[0].sum) {
+           const account = accounts.filter((acc) => acc.id === id)[0];
+            setSumChanged({...account, sum: +(account.sum - +enteredAmount.amount).toFixed(2)});
+
+            setEnteredAmount({
+                id: null,
+                amount: '',
+            });
+
         } else {
             setShowModal({
                 state: 'visible',
@@ -95,21 +90,23 @@ const AccountList = ({ accounts, setAccount }) => {
                 });
             }, 2000);
         }
+        }
     };
 
     const filterHandler = (e) => {
         setAccountFilter(e.target.value);
     };
 
-    const filteredAccounts = accounts.filter((acc) =>
+    const filteredAccounts = accounts ? accounts.filter((acc) =>
         accountFilter === 'withMoney'
             ? acc.sum > 0
             : accountFilter === 'noMoney'
             ? acc.sum === 0
             : true
-    );
+    ) : [];
 
-    const empty = <p>No accounts to show</p>;
+
+      const empty = <p>No accounts to show</p>;
 
     return (
         <>
@@ -151,7 +148,7 @@ const AccountList = ({ accounts, setAccount }) => {
                                               type='number'
                                               id={acc.id}
                                               onChange={sumHandler}
-                                              value={acc.enteredAmount}
+                                              value={acc.id === enteredAmount.id ? enteredAmount.amount : ''}
                                               className='border border-gray-400 rounded py-2 px-4 w-24'
                                               min={0}
                                               step='0.01'
