@@ -42,7 +42,7 @@ const GlobalProvider = ({ children }) => {
         .then(data => setAccount(data));
     }
   }, [newAccount]);
-  [];
+
   //DELETE
 
   useEffect(() => {

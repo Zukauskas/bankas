@@ -7,7 +7,7 @@ function Login() {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
 
-  const { setLogged, setAuthName } = useContext(Global);
+  const { setLogged, setAuthName, setRoute } = useContext(Global);
 
   // LOGIN FUNCTION
   const login = () => {
@@ -27,6 +27,7 @@ function Login() {
         console.log(data);
         if (data.message === 'Login success') {
           setLogged(true);
+          setRoute('accounts');
           setName('');
           setPassword('');
           setError(null);
