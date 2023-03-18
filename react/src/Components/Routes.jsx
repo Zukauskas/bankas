@@ -5,34 +5,20 @@ import Login from './Login';
 import Bank from './Bank';
 import AccountSummary from './Account/AccountSummary';
 
-function Routes({
-  accounts,
-  setNewAccount,
-  setSumChanged,
-  setDeletedAccount,
-  showModal,
-  setShowModal,
-}) {
+function Routes() {
   const { route } = useContext(Global);
 
   switch (route) {
     case 'accounts':
       return (
         <Auth>
-          <Bank
-            accounts={accounts}
-            addAccount={setNewAccount}
-            setSumChanged={setSumChanged}
-            setDeletedAccount={setDeletedAccount}
-            showModal={showModal}
-            setShowModal={setShowModal}
-          />
+          <Bank />
         </Auth>
       );
     case 'login':
       return <Login />;
     case 'home':
-      return <AccountSummary accounts={accounts} />;
+      return <AccountSummary />;
     default:
       return null;
   }
