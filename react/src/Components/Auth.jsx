@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { Global } from './Global';
 import Login from './Login';
+import { Loader } from './Loader';
 
 function Auth({ children }) {
   const { setAuthName, logged, setLogged } = useContext(Global);
@@ -23,7 +24,7 @@ function Auth({ children }) {
   }, []);
 
   if (logged === null) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
   if (logged === true) {
     return <>{children}</>;
