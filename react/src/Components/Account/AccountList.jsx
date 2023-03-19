@@ -10,32 +10,38 @@ const AccountList = () => {
     amount: '',
   });
 
-  const context = useContext(Global);
+  const {
+    setShowModal,
+    showModal,
+    accounts,
+    setDeletedAccount,
+    setSumChanged,
+  } = useContext(Global);
 
   const deleteHandler = id => {
-    const account = [...context.accounts].filter(acc => acc.id === id);
+    const account = [...accounts].filter(acc => acc.id === id);
     if (account[0].sum > 0) {
-      context.setShowModal({
+      setShowModal({
         state: 'visible',
         message: 'Can not delete account with money',
         color: 'bg-red-500',
       });
       setTimeout(() => {
-        context.setShowModal({
+        setShowModal({
           state: 'hidden',
           message: '',
           color: '',
         });
       }, 2000);
     } else {
-      context.setDeletedAccount(account[0]);
-      context.setShowModal({
+      setDeletedAccount(account[0]);
+      setShowModal({
         state: 'visible',
         message: 'Account deleted',
         color: 'bg-orange-500',
       });
       setTimeout(() => {
-        context.setShowModal({
+        setShowModal({
           state: 'hidden',
           message: '',
           color: '',
@@ -53,9 +59,9 @@ const AccountList = () => {
 
   const depositHandler = id => {
     if (enteredAmount.id === id) {
-      const account = context.accounts.filter(acc => acc.id === id)[0];
+      const account = accounts.filter(acc => acc.id === id)[0];
 
-      context.setSumChanged({
+      setSumChanged({
         ...account,
         sum: +(account.sum + +enteredAmount.amount).toFixed(2),
       });
@@ -69,11 +75,11 @@ const AccountList = () => {
 
   const withdrawHandler = id => {
     if (enteredAmount.id === id) {
-      const account = context.accounts.filter(acc => acc.id === id);
+      const account = accounts.filter(acc => acc.id === id);
 
       if (+enteredAmount.amount <= account[0].sum) {
-        const account = context.accounts.filter(acc => acc.id === id)[0];
-        context.setSumChanged({
+        const account = accounts.filter(acc => acc.id === id)[0];
+        setSumChanged({
           ...account,
           sum: +(account.sum - +enteredAmount.amount).toFixed(2),
         });
@@ -83,13 +89,13 @@ const AccountList = () => {
           amount: '',
         });
       } else {
-        context.setShowModal({
+        setShowModal({
           state: 'visible',
           message: 'Cannot withdraw more than in the account',
           color: 'bg-orange-500',
         });
         setTimeout(() => {
-          context.setShowModal({
+          setShowModal({
             state: 'hidden',
             message: '',
             color: '',
@@ -103,8 +109,8 @@ const AccountList = () => {
     setAccountFilter(e.target.value);
   };
 
-  const filteredAccounts = context.accounts
-    ? context.accounts.filter(acc =>
+  const filteredAccounts = accounts
+    ? accounts.filter(acc =>
         accountFilter === 'withMoney'
           ? acc.sum > 0
           : accountFilter === 'noMoney'
@@ -119,8 +125,8 @@ const AccountList = () => {
     <>
       <AccountFilter filterHandler={filterHandler} />
       <div
-        className={`${context.showModal.state} ${context.showModal.color} w-1/3 px-2 py-4 fixed top-1 text-center rounded-md`}>
-        <p>{context.showModal.message}</p>
+        className={`${showModal.state} ${showModal.color} w-1/3 px-2 py-4 fixed top-1 text-center rounded-md`}>
+        <p>{showModal.message}</p>
       </div>
       <div className='container flex flex-wrap gap-4 relative justify-center'>
         {filteredAccounts.length > 0

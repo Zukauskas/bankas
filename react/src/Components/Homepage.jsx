@@ -2,10 +2,10 @@ import { useContext } from 'react';
 import { Global } from './Global';
 
 const Homepage = () => {
-  const context = useContext(Global);
+  const { accounts } = useContext(Global);
 
-  const totalMoney = context.accounts
-    ? context.accounts.reduce((acc, cur) => acc + cur.sum, 0)
+  const totalMoney = accounts
+    ? accounts.reduce((acc, cur) => acc + cur.sum, 0)
     : 0;
 
   return (
@@ -14,7 +14,7 @@ const Homepage = () => {
         <div className='flex justify-center items-center space-x-6'>
           <div className='w-32 h-32 border-2 border-yellow-500 bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
             <h3 className='text-2xl font-bold mb-2'>
-              {context.accounts ? context.accounts.length : 0}
+              {accounts ? accounts.length : 0}
             </h3>
           </div>
           <div className='w-32 h-32 border-2 border-green-500  bg-white/50 rounded-full shadow-lg flex justify-center items-center'>

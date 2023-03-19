@@ -2,10 +2,10 @@ import { useContext } from 'react';
 import { Global } from '../Global';
 
 const AccountSummary = () => {
-  const context = useContext(Global);
+  const { accounts } = useContext(Global);
 
-  const totalMoney = context.accounts
-    ? context.accounts.reduce((acc, cur) => acc + cur.sum, 0)
+  const totalMoney = accounts
+    ? accounts.reduce((acc, cur) => acc + cur.sum, 0)
     : 0;
 
   return (
@@ -15,7 +15,7 @@ const AccountSummary = () => {
         <p className='text-lg font-semibold text-gray-700'>
           Total Accounts:
           <span className='text-gray-600 ml-2 font-normal'>
-            {context.accounts ? context.accounts.length : 0}
+            {accounts ? accounts.length : 0}
           </span>
         </p>
         <p className='text-lg font-semibold text-gray-700'>

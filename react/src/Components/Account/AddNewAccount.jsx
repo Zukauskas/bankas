@@ -36,7 +36,7 @@ const lastNameReducer = (state, action) => {
 const AddNewAccount = () => {
   const [formIsValid, setFormIsValid] = useState(false);
 
-  const context = useContext(Global);
+  const { setShowModal, showModal, setNewAccount } = useContext(Global);
 
   const [nameState, dispatchName] = useReducer(nameReducer, {
     value: '',
@@ -79,17 +79,17 @@ const AddNewAccount = () => {
   const dataHandler = event => {
     event.preventDefault();
     if (nameIsValid && lastNameIsValid) {
-      context.setNewAccount({
+      setNewAccount({
         name: nameState.value,
         lastName: lastNameState.value,
       });
-      context.setShowModal({
+      setShowModal({
         state: 'visible',
         message: 'New account added',
         color: 'bg-green-500',
       });
       setTimeout(() => {
-        context.setShowModal({
+        setShowModal({
           state: 'hidden',
           message: '',
           color: '',
@@ -106,8 +106,8 @@ const AddNewAccount = () => {
   return (
     <>
       <div
-        className={`${context.showModal.state} ${context.showModal.color} w-1/3 px-2 py-4 fixed top-1 text-center rounded-md`}>
-        <p>{context.showModal.message}</p>
+        className={`${showModal.state} ${showModal.color} w-1/3 px-2 py-4 fixed top-1 text-center rounded-md`}>
+        <p>{showModal.message}</p>
       </div>
 
       <form
