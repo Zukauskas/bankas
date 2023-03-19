@@ -16,6 +16,23 @@ const GlobalProvider = ({ children }) => {
     color: '',
   });
 
+  // CHECK IF USER IS LOGGED IN OR NOT ON PAGE LOAD
+  useEffect(() => {
+    fetch('http://localhost:3003/login', {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message === 'Login success' || data.ok) {
+          setLogged(true);
+          setAuthName(data.name);
+        } else {
+          setLogged(false);
+        }
+      });
+  }, []);
+
   // Server URL
   const url = 'http://localhost:3003/accounts';
 
