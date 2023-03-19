@@ -167,7 +167,11 @@ app.post('/logout', async (req, res) => {
         });
 
         await writeFile('./data/users.json', JSON.stringify(updatedUsers));
-        res.clearCookie('bankSession');
+        res.clearCookie('bankSession', {
+            sameSite: 'None',
+            secure: true,
+            httpOnly: true,
+        });
         res.status(200).send({ message: 'Logout success' });
     } catch (err) {
         res.status(500).send({ error: err.message });

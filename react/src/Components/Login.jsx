@@ -24,7 +24,6 @@ function Login() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         if (data.message === 'Login success') {
           setLogged(true);
           setRoute('accounts');
@@ -42,9 +41,9 @@ function Login() {
 
   return (
     <div className='container mx-auto'>
-      <div className='flex justify-center px-6 my-12'>
-        <div className='w-full xl:w-3/4 lg:w-11/12 flex'>
-          <div className='w-full lg:w-1/2 bg-white p-5 rounded-lg lg:rounded-l-none'>
+      <div className='flex justify-center px-6 my-48'>
+        <div className='w-full xl:w-3/4 lg:w-11/12 flex shadow-2xl'>
+          <div className='w-full lg:w-1/2 bg-white p-5 rounded-lg lg:rounded-l-none '>
             {error ? (
               <h3 className='pt-4 text-2xl text-center text-red-500'>
                 Login Failed!

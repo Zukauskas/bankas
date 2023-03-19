@@ -3,7 +3,7 @@ import Auth from './Auth';
 import { Global } from './Global';
 import Login from './Login';
 import Bank from './Bank';
-import AccountSummary from './Account/AccountSummary';
+import Homepage from './Homepage';
 
 function Routes() {
   const { route } = useContext(Global);
@@ -18,7 +18,7 @@ function Routes() {
     case 'login':
       return <Login />;
     case 'home':
-      return <AccountSummary />;
+      return <Homepage />;
     default:
       return null;
   }
