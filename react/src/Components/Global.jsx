@@ -24,11 +24,13 @@ const GlobalProvider = ({ children }) => {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.message === 'Login success' || data.ok) {
+        if (data.message === 'Login success') {
           setLogged(true);
+          setRoute('accounts');
           setAuthName(data.name);
         } else {
           setLogged(false);
+          setRoute('login');
         }
       });
   }, []);
