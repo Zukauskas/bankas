@@ -96,6 +96,7 @@ const GlobalProvider = ({ children }) => {
       .then(response => response.json())
       .then(data => {
         if (data.message === 'Logout success') {
+          setRoute('login');
           setLogged(false);
           setAuthName(null);
         }
