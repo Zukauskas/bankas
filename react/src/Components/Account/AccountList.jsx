@@ -58,8 +58,8 @@ const AccountList = () => {
   };
 
   const depositHandler = id => {
-    if (enteredAmount.id === id) {
-      const account = accounts.filter(acc => acc.id === id)[0];
+    if (+enteredAmount.id === +id) {
+      const account = accounts.filter(acc => +acc.id === +id)[0];
 
       setSumChanged({
         ...account,
@@ -74,11 +74,11 @@ const AccountList = () => {
   };
 
   const withdrawHandler = id => {
-    if (enteredAmount.id === id) {
-      const account = accounts.filter(acc => acc.id === id);
+    if (+enteredAmount.id === +id) {
+      const account = accounts.filter(acc => +acc.id === +id);
 
       if (+enteredAmount.amount <= account[0].sum) {
-        const account = accounts.filter(acc => acc.id === id)[0];
+        const account = accounts.filter(acc => +acc.id === +id)[0];
         setSumChanged({
           ...account,
           sum: +(account.sum - +enteredAmount.amount).toFixed(2),
@@ -157,7 +157,7 @@ const AccountList = () => {
                         id={acc.id}
                         onChange={sumHandler}
                         value={
-                          acc.id === enteredAmount.id
+                          +acc.id === +enteredAmount.id
                             ? enteredAmount.amount
                             : ''
                         }

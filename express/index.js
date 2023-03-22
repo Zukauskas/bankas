@@ -6,6 +6,7 @@ const Joi = require('joi');
 const { v4: uuid } = require('uuid');
 const md5 = require('md5');
 const { readFile, writeFile } = require('fs').promises;
+const mysql = require('mysql')
 
 const app = express();
 const PORT = 3003;
@@ -18,79 +19,93 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '123',
+    database: 'users'
+})
+
+connection.connect()
 // GET
 
-app.get('/accounts', async (req, res) => {
-    try {
-        const data = await readFile('./data/accounts.json', 'utf8');
-        const accounts = JSON.parse(data);
-        res.status(200).send(accounts);
-    } catch (err) {
-        res.status(500).send({ error: err.message });
-    }
+app.get('/accounts', (req, res) => {
+    connection.query('SELECT * FROM users', (error, results) => {
+        if (error) {
+            res.status(500).send({ error: err.message });
+            return;
+        }
+        res.status(200).send(results);
+    });
+
 });
 
 // POST
 
 app.post(
-    '/accounts',
-    celebrate({
-        body: Joi.object({
-            name: Joi.string().required().min(3),
-            lastName: Joi.string().required().min(3),
-        }),
-    }),
-    async (req, res) => {
-        try {
-            const data = await readFile('./data/accounts.json', 'utf8');
-            const accounts = JSON.parse(data);
-            const { name, lastName } = req.body;
-            console.log(name, lastName);
-            accounts.push({ name, lastName, id: uuid(), sum: 0 });
-            await writeFile('./data/accounts.json', JSON.stringify(accounts));
-            res.status(201).send(accounts);
-        } catch (err) {
-            res.status(500).send({ error: err.message });
-        }
+    '/accounts', (req, res) => {
+        const { name, lastName } = req.body;
+        connection.query('INSERT INTO users (name, lastName) VALUES (?, ?)', [name, lastName], (error, results) => {
+            if (error) {
+                res.status(500).send({ error: err.message });
+                return;
+            }
+        });
+        connection.query('SELECT * FROM users', (error, results) => {
+            if (error) {
+                res.status(500).send({ error: err.message });
+                return;
+            }
+
+            res.status(201).send(results);
+        });
     }
 );
 
+
+
 // PUT
 
-app.put('/accounts/:id', async (req, res) => {
-    try {
-        const data = await readFile('./data/accounts.json', 'utf8');
-        const accounts = JSON.parse(data);
-        const updatedAccounts = accounts.map((account) => {
-            if (account.id === req.params.id) {
-                return { ...req.body };
-            }
-            return { ...account };
-        });
+app.put('/accounts/:id', (req, res) => {
 
-        await writeFile('./data/accounts.json', JSON.stringify(updatedAccounts))
-        console.log(updatedAccounts)
-            ;
-        res.status(200).send(updatedAccounts);
-    } catch (err) {
-        res.status(500).send({ error: err.message });
-    }
+    const id = req.params.id;
+    const { name, lastName, sum } = req.body;
+    connection.query('UPDATE users SET name = ?, lastName = ?, sum = ? WHERE id = ?', [name, lastName, sum, id], (error, results) => {
+        if (error) {
+            res.status(500).send({ error: err.message });
+            return;
+        }
+    });
+    connection.query('SELECT * FROM users', (error, results) => {
+        if (error) {
+            res.status(500).send({ error: err.message });
+            return;
+        }
+
+        res.status(200).send(results);
+    });
+
+
 });
 
 // DELETE
 
 app.delete('/accounts/:id', async (req, res) => {
-    try {
-        const data = await readFile('./data/accounts.json', 'utf8');
-        const accounts = JSON.parse(data);
-        const updatedAccounts = accounts.filter(
-            (account) => account.id !== req.params.id
-        );
-        await writeFile('./data/accounts.json', JSON.stringify(updatedAccounts));
-        res.status(200).send(updatedAccounts);
-    } catch (err) {
-        res.status(500).send({ error: err.message });
-    }
+    const id = req.params.id;
+    connection.query('DELETE FROM users WHERE id = ?', [id], (error, results) => {
+        if (error) {
+            res.status(500).send({ error: err.message });
+            return;
+        }
+    });
+    connection.query('SELECT * FROM users', (error, results) => {
+        if (error) {
+            res.status(500).send({ error: err.message });
+            return;
+        }
+
+        res.status(200).send(results);
+    });
 });
 
 // set cookie
