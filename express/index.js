@@ -1,11 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const { celebrate } = require('celebrate');
-const Joi = require('joi');
 const { v4: uuid } = require('uuid');
 const md5 = require('md5');
-const { readFile, writeFile } = require('fs').promises;
 const mysql = require('mysql')
 
 const app = express();
@@ -26,7 +23,16 @@ const connection = mysql.createConnection({
     database: 'users'
 })
 
-connection.connect()
+connection.connect((err) => {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log('Connected to database');
+    }
+})
+
+
 // GET
 
 app.get('/accounts', (req, res) => {
@@ -37,6 +43,7 @@ app.get('/accounts', (req, res) => {
         }
         res.status(200).send(results);
     });
+
 
 });
 
@@ -59,8 +66,8 @@ app.post(
 
             res.status(201).send(results);
         });
-    }
-);
+
+    });
 
 
 
@@ -106,30 +113,28 @@ app.delete('/accounts/:id', async (req, res) => {
 
         res.status(200).send(results);
     });
+
 });
 
 // set cookie
 
 app.post('/login', async (req, res) => {
-    try {
-        const users = await readFile('./data/users.json', 'utf8');
-        const name = req.body.name;
-        const password = md5(req.body.password);
-        console.log(name, password)
-        const user = JSON.parse(users).find(
-            (user) => user.name === name && user.password === password
-        );
-        if (user) {
+
+    let { name, password } = req.body;
+    password = md5(password)
+    connection.query('SELECT * FROM accounts WHERE name = ? AND password = ?', [name, password], (error, results) => {
+        if (error) {
+            res.status(500).send({ message: 'Login failed' });
+            return;
+        }
+        if (results.length > 0) {
             const tokenID = md5(uuid());
-            const updatedUsers = JSON.parse(users).map((user) => {
-                if (user.name === name && user.password === password) {
-                    return { ...user, token: tokenID };
+            connection.query('UPDATE accounts SET tokenID = ? WHERE name = ? AND password = ?', [tokenID, name, password], (error, results) => {
+                if (error) {
+                    res.status(500).send({ message: 'Login failed' });
+                    return;
                 }
-                return { ...user };
             });
-
-            await writeFile('./data/users.json', JSON.stringify(updatedUsers));
-
             res.cookie('bankSession', tokenID, {
                 sameSite: 'None',
                 secure: true,
@@ -137,64 +142,55 @@ app.post('/login', async (req, res) => {
             });
             res.status(200).send({
                 message: 'Login success',
-                name: user.name
+                name: name
             });
-        } else {
+        }
+        else {
             res.status(401).send({ message: 'Login failed' });
         }
-    } catch (err) {
-        res.status(500).send({ error: err.message });
-    }
+    });
+
 });
 
 // get cookie
 
 app.get('/login', async (req, res) => {
-    try {
-        const users = await readFile('./data/users.json', 'utf8');
-        const token = req.cookies.bankSession;
-        const user = JSON.parse(users).find((user) => user.token === token);
-
-        if (user) {
+    const token = req.cookies.bankSession;
+    connection.query('SELECT * FROM accounts WHERE tokenID = ?', [token], (error, results) => {
+        if (error) {
+            res.status(500).send({ message: 'Login failed' });
+            return;
+        }
+        if (results.length > 0) {
             res.status(200).send({
                 message: 'Login success',
-                name: user.name
+                name: results[0].name
             });
-        } else {
+        }
+        else {
             res.status(401).send({ message: 'Login failed' });
         }
-    } catch (err) {
-        res.status(500).send({ error: err.message });
     }
+    );
 });
 
 // Logout
 
 app.post('/logout', async (req, res) => {
-    try {
-        const users = await readFile('./data/users.json', 'utf8');
-        const token = req.cookies.bankSession;
-        const updatedUsers = JSON.parse(users).map((user) => {
-            if (user.token === token) {
-                return { ...user, token: null };
-            }
-            return { ...user };
-        });
-
-        await writeFile('./data/users.json', JSON.stringify(updatedUsers));
-        res.clearCookie('bankSession', {
-            sameSite: 'None',
-            secure: true,
-            httpOnly: true,
-        });
-        res.status(200).send({ message: 'Logout success' });
-    } catch (err) {
-        res.status(500).send({ error: err.message });
-    }
+    const token = req.cookies.bankSession;
+    connection.query('UPDATE accounts SET tokenID = null WHERE tokenID = ?', [token], (error, results) => {
+        if (error) {
+            res.status(500).send({ message: 'Logout failed' });
+            return;
+        }
+    });
+    res.clearCookie('bankSession', {
+        sameSite: 'None',
+        secure: true,
+        httpOnly: true,
+    });
+    res.status(200).send({ message: 'Logout success' });
 });
-
-
-
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
