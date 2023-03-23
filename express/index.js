@@ -38,7 +38,7 @@ connection.connect((err) => {
 app.get('/accounts', (req, res) => {
     connection.query('SELECT * FROM users', (error, results) => {
         if (error) {
-            res.status(500).send({ error: err.message });
+            res.status(500).send({ message: error });
             return;
         }
         res.status(200).send(results);
@@ -54,13 +54,13 @@ app.post(
         const { name, lastName } = req.body;
         connection.query('INSERT INTO users (name, lastName) VALUES (?, ?)', [name, lastName], (error, results) => {
             if (error) {
-                res.status(500).send({ error: err.message });
+                res.status(500).send({ message: error });
                 return;
             }
         });
         connection.query('SELECT * FROM users', (error, results) => {
             if (error) {
-                res.status(500).send({ error: err.message });
+                res.status(500).send({ message: error });
                 return;
             }
 
@@ -79,13 +79,13 @@ app.put('/accounts/:id', (req, res) => {
     const { name, lastName, sum } = req.body;
     connection.query('UPDATE users SET name = ?, lastName = ?, sum = ? WHERE id = ?', [name, lastName, sum, id], (error, results) => {
         if (error) {
-            res.status(500).send({ error: err.message });
+            res.status(500).send({ message: error });
             return;
         }
     });
     connection.query('SELECT * FROM users', (error, results) => {
         if (error) {
-            res.status(500).send({ error: err.message });
+            res.status(500).send({ message: error });
             return;
         }
 
@@ -101,13 +101,13 @@ app.delete('/accounts/:id', async (req, res) => {
     const id = req.params.id;
     connection.query('DELETE FROM users WHERE id = ?', [id], (error, results) => {
         if (error) {
-            res.status(500).send({ error: err.message });
+            res.status(500).send({ message: error });
             return;
         }
     });
     connection.query('SELECT * FROM users', (error, results) => {
         if (error) {
-            res.status(500).send({ error: err.message });
+            res.status(500).send({ message: error });
             return;
         }
 

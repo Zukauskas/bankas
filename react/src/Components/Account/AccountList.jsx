@@ -109,6 +109,8 @@ const AccountList = () => {
     setAccountFilter(e.target.value);
   };
 
+  console.log(accounts);
+
   const filteredAccounts = accounts
     ? accounts.filter(acc =>
         accountFilter === 'withMoney'
@@ -137,7 +139,7 @@ const AccountList = () => {
                   key={acc.id}
                   className='bg-white shadow-md rounded px-8 py-6 mb-4 relative flex flex-col items-center'>
                   <img
-                    src='./racoon.png'
+                    src={`${acc.image ? acc.image : './racoon.png'}`}
                     alt='profile image'
                     className='h-20 w-20 rounded-full ring-2 ring-orange-400 mb-4'
                   />
