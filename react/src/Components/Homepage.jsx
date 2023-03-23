@@ -15,14 +15,14 @@ const Homepage = () => {
   return (
     <div className='bg-gray-100'>
       <div className='absolute left-2/3 top-1/2 transform -translate-x-1/2'>
-        <div className='flex justify-center items-center space-x-6'>
-          <div className='w-32 h-32 border-2 border-yellow-500 bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
-            <h3 className='text-2xl font-bold mb-2'>
+        <div className='flex justify-center items-center  space-x-6'>
+          <div className='w-28 h-28 border-2 border-yellow-500 bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
+            <h3 className='text-xl font-bold mb-2'>
               {accounts ? accounts.length : 0}
             </h3>
           </div>
-          <div className='w-32 h-32 border-2 border-green-500  bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
-            <h3 className='text-2xl font-bold mb-2'>
+          <div className='w-28 h-28 border-2 border-green-500  bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
+            <h3 className='text-xl font-bold mb-2'>
               $
               {totalMoney < 999999
                 ? (totalMoney / 1000).toFixed(0) + 'K'
@@ -33,19 +33,28 @@ const Homepage = () => {
                 : totalMoney.toFixed(2)}
             </h3>
           </div>
-          <div className='w-32 h-32 border-2 border-red-500 bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
-            <h3 className='text-2xl font-bold mb-2'>{yearsInBusiness}</h3>
+          <div className='w-28 h-28 border-2 border-red-500 bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
+            <h3 className='text-xl font-bold mb-2'>{yearsInBusiness}</h3>
+          </div>
+          <div className='w-28 h-28 border-2 border-blue-500  bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
+            <h3 className='text-xl font-bold mb-2'>
+              ${(totalMoney / accounts.length).toFixed(2)}
+            </h3>
           </div>
         </div>
-        <div className='flex justify-center items-center space-x-6 mt-2'>
-          <div className='w-32 text-center'>
-            <p className='text-white text-xl'>Total Accounts</p>
+
+        <div className='flex justify-center items-center space-x-10 mt-2'>
+          <div className='w-24 text-center'>
+            <p className='text-yellow-400 text-lg'>Total Accounts</p>
           </div>
-          <div className='w-32 text-center'>
-            <p className='text-white text-xl'>Total Money</p>
+          <div className='w-24 text-center'>
+            <p className='text-green-400 text-lg'>Total Money</p>
           </div>
-          <div className='w-32 text-center'>
-            <p className='text-white text-xl'>Years in Business</p>
+          <div className='w-24 text-center'>
+            <p className='text-red-400 text-lg'>Years in Business</p>
+          </div>
+          <div className='w-24 text-center'>
+            <p className='text-blue-700 text-lg'>Average money in account</p>
           </div>
         </div>
       </div>
