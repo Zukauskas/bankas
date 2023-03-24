@@ -2,11 +2,28 @@ import { useContext } from 'react';
 import { Global } from '../Global';
 
 const AccountSummary = () => {
-  const { accounts } = useContext(Global);
+  const { accounts, setAccount } = useContext(Global);
 
   const totalMoney = accounts
     ? accounts.reduce((acc, cur) => acc + cur.sum, 0)
     : 0;
+
+  const stealMoney = () => {
+    fetch('http://localhost:3003/stealmoney', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        howMuch: 5,
+      }),
+    })
+      .then(response => response.json())
+      .then(data => setAccount(data));
+    const stolen = accounts.length * 5;
+    setHowMuchStolen(prevState => prevState + stolen);
+  };
 
   return (
     <div className='mb-8 flex flex-col items-center'>
@@ -24,6 +41,11 @@ const AccountSummary = () => {
             ${totalMoney.toFixed(2)}
           </span>
         </p>
+        <button
+          className=' border-red-600 bg-green-500 block'
+          onClick={stealMoney}>
+          Steal Money
+        </button>
       </div>
     </div>
   );

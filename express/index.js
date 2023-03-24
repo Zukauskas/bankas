@@ -43,8 +43,6 @@ app.get('/accounts', (req, res) => {
         }
         res.status(200).send(results);
     });
-
-
 });
 
 // POST
@@ -58,6 +56,7 @@ app.post(
                 return;
             }
         });
+
         connection.query('SELECT * FROM users', (error, results) => {
             if (error) {
                 res.status(500).send({ message: error });
@@ -97,13 +96,14 @@ app.put('/accounts/:id', (req, res) => {
 
 // DELETE
 
-app.delete('/accounts/:id', async (req, res) => {
+app.delete('/accounts/:id', (req, res) => {
     const id = req.params.id;
     connection.query('DELETE FROM users WHERE id = ?', [id], (error, results) => {
         if (error) {
             res.status(500).send({ message: error });
             return;
         }
+
     });
     connection.query('SELECT * FROM users', (error, results) => {
         if (error) {
@@ -118,7 +118,7 @@ app.delete('/accounts/:id', async (req, res) => {
 
 // set cookie
 
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
 
     let { name, password } = req.body;
     password = md5(password)
@@ -154,7 +154,7 @@ app.post('/login', async (req, res) => {
 
 // get cookie
 
-app.get('/login', async (req, res) => {
+app.get('/login', (req, res) => {
     const token = req.cookies.bankSession;
     connection.query('SELECT * FROM accounts WHERE tokenID = ?', [token], (error, results) => {
         if (error) {
@@ -176,7 +176,7 @@ app.get('/login', async (req, res) => {
 
 // Logout
 
-app.post('/logout', async (req, res) => {
+app.post('/logout', (req, res) => {
     const token = req.cookies.bankSession;
     connection.query('UPDATE accounts SET tokenID = null WHERE tokenID = ?', [token], (error, results) => {
         if (error) {
@@ -191,6 +191,24 @@ app.post('/logout', async (req, res) => {
     });
     res.status(200).send({ message: 'Logout success' });
 });
+
+//  Steal money from all accounts
+app.put('/stealmoney', (req, res) => {
+    const { howMuch } = req.body;
+    connection.query('UPDATE users SET sum = sum - ?', [howMuch], (error, results) => {
+        if (error) {
+            console.error(error);
+        }
+    })
+    connection.query('SELECT * FROM users', (error, results) => {
+        if (error) {
+            console.error(error);
+        }
+        res.status(200).send(results);
+
+    })
+})
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
