@@ -1,9 +1,12 @@
 import { useState, useContext, useEffect } from 'react';
 import AccountFilter from './AccountFilter';
+import AccountSort from './AccountSort';
 import { Global } from '../Global';
 
 const AccountList = () => {
   const [accountFilter, setAccountFilter] = useState('All');
+  const [accountSort, setAccountSort] = useState('All');
+
   const [depositConfirmModal, setDepositConfirmModal] = useState({
     state: 'hidden',
     approved: null,
@@ -34,10 +37,10 @@ const AccountList = () => {
       .then(data => setAccount(data));
   };
 
-  const blockedUserModalHandler = () => {
+  const blockedUserModalHandler = msg => {
     setShowModal({
       state: 'visible',
-      message: 'User blocked',
+      message: `${msg}, user is blocked`,
       color: 'bg-red-500',
     });
     setTimeout(() => {
@@ -92,6 +95,19 @@ const AccountList = () => {
       setShowModal({
         state: 'visible',
         message: 'Can not delete account with money',
+        color: 'bg-red-500',
+      });
+      setTimeout(() => {
+        setShowModal({
+          state: 'hidden',
+          message: '',
+          color: '',
+        });
+      }, 2000);
+    } else if (account[0].sum < 0) {
+      setShowModal({
+        state: 'visible',
+        message: 'Can not delete account with debt',
         color: 'bg-red-500',
       });
       setTimeout(() => {
@@ -184,21 +200,53 @@ const AccountList = () => {
     setAccountFilter(e.target.value);
   };
 
+  const sortHandler = e => {
+    setAccountSort(e.target.value);
+  };
+
   const filteredAccounts = accounts
     ? accounts.filter(acc =>
         accountFilter === 'withMoney'
           ? acc.sum > 0
           : accountFilter === 'noMoney'
           ? acc.sum === 0
+          : accountFilter === 'withDebt'
+          ? acc.sum < 0
+          : accountFilter === 'blocked'
+          ? acc.isBlocked
+          : accountFilter === 'active'
+          ? !acc.isBlocked
           : true,
       )
     : [];
+
+  const sortedAndFilteredAccounts = filteredAccounts
+    ? [...filteredAccounts].sort((a, b) => {
+        if (accountSort === 'lastnameAZ') {
+          return a.lastName.localeCompare(b.lastName);
+        } else if (accountSort === 'lastnameZA') {
+          return b.lastName.localeCompare(a.lastName);
+        } else if (accountSort === 'balanceLH') {
+          return +a.sum > +b.sum;
+        } else if (accountSort === 'balanceHL') {
+          return +a.sum < +b.sum;
+        } else {
+          return a.id > b.id ? 1 : -1;
+        }
+      })
+    : [];
+
+  console.log(sortedAndFilteredAccounts);
 
   const empty = <p>No accounts to show</p>;
 
   return (
     <>
-      <AccountFilter filterHandler={filterHandler} />
+      <div className='flex gap-4'>
+        <AccountFilter filterHandler={filterHandler} />
+        <AccountSort sortHandler={sortHandler} />
+      </div>
+
       {/* Confirmation modal */}
 
       <div
@@ -248,74 +296,72 @@ const AccountList = () => {
         <p>{showModal.message}</p>
       </div>
       <div className='container flex flex-wrap gap-4 relative justify-center'>
-        {filteredAccounts.length > 0
-          ? filteredAccounts
-              .sort((a, b) => a.lastName.localeCompare(b.lastName))
-              .map(acc => (
-                <div
-                  key={acc.id}
-                  className='bg-white shadow-md rounded px-8 py-6 mb-4 relative flex flex-col items-center'>
-                  <img
-                    src={`${acc.image ? acc.image : './racoon.png'}`}
-                    alt='profile image'
-                    className='h-20 w-20 rounded-full ring-2 ring-orange-400 mb-4'
-                  />
-                  <p className='font-bold text-gray-700 capitalize mb-2'>
-                    {acc.name} {acc.lastName}
-                  </p>
-                  <p className='text-gray-700 font-bold mb-4'>${acc.sum}</p>
-                  <div className='w-full flex flex-row items-center justify-between'>
+        {sortedAndFilteredAccounts.length > 0
+          ? sortedAndFilteredAccounts.map(acc => (
+              <div
+                key={acc.id}
+                className='bg-white shadow-md rounded px-8 py-6 mb-4 relative flex flex-col items-center'>
+                <img
+                  src={`${acc.image ? acc.image : './racoon.png'}`}
+                  alt='profile image'
+                  className='h-20 w-20 rounded-full ring-2 ring-orange-400 mb-4'
+                />
+                <p className='font-bold text-gray-700 capitalize mb-2'>
+                  {acc.name} {acc.lastName}
+                </p>
+                <p className='text-gray-700 font-bold mb-4'>${acc.sum}</p>
+                <div className='w-full flex flex-row items-center justify-between'>
+                  <button
+                    className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 absolute top-0 right-12'
+                    onClick={() => userBlockHandler(acc.id)}>
+                    {acc.isBlocked ? 'Unblock' : 'Block'}
+                  </button>
+                  <button
+                    className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 absolute top-0 right-0'
+                    onClick={() =>
+                      acc.isBlocked
+                        ? blockedUserModalHandler('Cannot delete account')
+                        : deleteHandler(acc.id)
+                    }>
+                    X
+                  </button>
+
+                  <div className='flex flex-row items-center space-x-4'>
+                    <input
+                      type='number'
+                      id={acc.id}
+                      onChange={sumHandler}
+                      value={
+                        +acc.id === +enteredAmount.id
+                          ? enteredAmount.amount
+                          : ''
+                      }
+                      className='border border-gray-400 rounded py-2 px-4 w-24'
+                      min={0}
+                      step='0.01'
+                    />
                     <button
-                      className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 absolute top-0 right-12'
-                      onClick={() => userBlockHandler(acc.id)}>
-                      {acc.isBlocked ? 'Unblock' : 'Block'}
-                    </button>
-                    <button
-                      className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 absolute top-0 right-0'
+                      className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded deposit-button'
                       onClick={() =>
                         acc.isBlocked
-                          ? blockedUserModalHandler()
-                          : deleteHandler(acc.id)
+                          ? blockedUserModalHandler('Cannot deposit')
+                          : depositHandler(acc.id)
                       }>
-                      X
+                      Deposit
                     </button>
-
-                    <div className='flex flex-row items-center space-x-4'>
-                      <input
-                        type='number'
-                        id={acc.id}
-                        onChange={sumHandler}
-                        value={
-                          +acc.id === +enteredAmount.id
-                            ? enteredAmount.amount
-                            : ''
-                        }
-                        className='border border-gray-400 rounded py-2 px-4 w-24'
-                        min={0}
-                        step='0.01'
-                      />
-                      <button
-                        className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded deposit-button'
-                        onClick={() =>
-                          acc.isBlocked
-                            ? blockedUserModalHandler()
-                            : depositHandler(acc.id)
-                        }>
-                        Deposit
-                      </button>
-                      <button
-                        className='bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded withdraw-button'
-                        onClick={() =>
-                          acc.isBlocked
-                            ? blockedUserModalHandler()
-                            : withdrawHandler(acc.id)
-                        }>
-                        Withdraw
-                      </button>
-                    </div>
+                    <button
+                      className='bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded withdraw-button'
+                      onClick={() =>
+                        acc.isBlocked
+                          ? blockedUserModalHandler('Cannot withdraw')
+                          : withdrawHandler(acc.id)
+                      }>
+                      Withdraw
+                    </button>
                   </div>
                 </div>
-              ))
+              </div>
+            ))
           : empty}
       </div>
     </>
