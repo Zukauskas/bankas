@@ -203,39 +203,39 @@ const AccountList = () => {
 
       <div
         id='popup-modal'
-        tabindex='-1'
-        class={`${depositConfirmModal.state} fixed top-0 left-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full`}>
-        <div class='relative w-full h-full max-w-md md:h-auto'>
-          <div class='relative bg-white rounded-lg shadow dark:bg-gray-700'>
-            <div class='p-6 text-center'>
+        tabIndex='-1'
+        className={`${depositConfirmModal.state} fixed top-0 left-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full`}>
+        <div className='relative w-full h-full max-w-md md:h-auto'>
+          <div className='relative bg-white rounded-lg shadow dark:bg-gray-700'>
+            <div className='p-6 text-center'>
               <svg
                 aria-hidden='true'
-                class='mx-auto mb-4 text-gray-400 w-14 h-14 dark:text-gray-200'
+                className='mx-auto mb-4 text-gray-400 w-14 h-14 dark:text-gray-200'
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
                 xmlns='http://www.w3.org/2000/svg'>
                 <path
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-width='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
                   d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'></path>
               </svg>
-              <h3 class='mb-5 text-lg font-normal text-gray-500 dark:text-gray-400'>
+              <h3 className='mb-5 text-lg font-normal text-gray-500 dark:text-gray-400'>
                 Are you sure you want to deposit {enteredAmount.amount} to
                 account?
               </h3>
               <button
                 data-modal-hide='popup-modal'
                 type='button'
-                class='text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2'
+                className='text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2'
                 onClick={approveDeposit}>
                 Yes, I'm sure
               </button>
               <button
                 data-modal-hide='popup-modal'
                 type='button'
-                class='text-red-500 bg-white hover:bg-red-100 focus:ring-4 focus:outline-none focus:ring-red-200 rounded-lg border border-red-200 text-sm font-medium px-5 py-2.5 hover:text-red-900 focus:z-10 dark:bg-red-700 dark:text-red-300 dark:border-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-600'
+                className='text-red-500 bg-white hover:bg-red-100 focus:ring-4 focus:outline-none focus:ring-red-200 rounded-lg border border-red-200 text-sm font-medium px-5 py-2.5 hover:text-red-900 focus:z-10 dark:bg-red-700 dark:text-red-300 dark:border-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-600'
                 onClick={cancelDeposit}>
                 No, cancel
               </button>
