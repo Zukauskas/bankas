@@ -23,14 +23,14 @@ const Homepage = () => {
           </div>
           <div className='w-28 h-28 border-2 border-green-500  bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
             <h3 className='text-xl font-bold mb-2'>
-              $
-              {totalMoney < 999999
+              €
+              {totalMoney < 999
+                ? totalMoney.toFixed(2)
+                : totalMoney < 999999
                 ? (totalMoney / 1000).toFixed(0) + 'K'
                 : totalMoney < 999999999
                 ? (totalMoney / 1000000).toFixed(1) + 'M'
-                : totalMoney < 999999999999
-                ? (totalMoney / 1000000000).toFixed(1) + 'B'
-                : totalMoney.toFixed(2)}
+                : (totalMoney / 1000000000).toFixed(1) + 'B'}
             </h3>
           </div>
           <div className='w-28 h-28 border-2 border-red-500 bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
@@ -38,7 +38,7 @@ const Homepage = () => {
           </div>
           <div className='w-28 h-28 border-2 border-blue-500  bg-white/50 rounded-full shadow-lg flex justify-center items-center'>
             <h3 className='text-xl font-bold mb-2'>
-              ${(totalMoney / accounts.length).toFixed(2)}
+              €{(totalMoney / accounts.length).toFixed(2)}
             </h3>
           </div>
         </div>

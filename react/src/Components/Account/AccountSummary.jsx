@@ -21,8 +21,6 @@ const AccountSummary = () => {
     })
       .then(response => response.json())
       .then(data => setAccount(data));
-    const stolen = accounts.length * 5;
-    setHowMuchStolen(prevState => prevState + stolen);
   };
 
   const accountWithDebt = accounts
@@ -44,46 +42,48 @@ const AccountSummary = () => {
   return (
     <div className='mb-8 flex flex-col items-center'>
       <h2 className='text-3xl font-bold mr-4 text-gray-900'>Bank Summary</h2>
-      <div className='flex flex-col justify-center items-center bg-white rounded-md shadow-lg py-2 px-6'>
-        <p className='text-lg font-semibold text-gray-700'>
+      <div className='grid grid-cols-3 justify-center items-center gap-4'>
+        <div className='text-lg font-semibold text-gray-700 bg-white rounded-md shadow-lg py-2 px-6 text-center'>
           Total Accounts:
           <span className='text-gray-600 ml-2 font-normal'>
             {accounts ? accounts.length : 0}
           </span>
-        </p>
-        <p className='text-lg font-semibold text-gray-700'>
+        </div>
+        <div className='text-lg font-semibold text-gray-700  bg-white rounded-md shadow-lg py-2 px-6 text-center'>
           Total Money:
           <span className='text-gray-600 ml-2 font-normal'>
-            ${totalMoney.toFixed(2)}
+            €{totalMoney.toFixed(2)}
           </span>
-        </p>
-        <p className='text-lg font-semibold text-gray-700'>
+        </div>
+        <div className='text-lg font-semibold text-gray-700  bg-white rounded-md shadow-lg py-2 px-6 text-center'>
           Accounts with Debt:
           <span className='text-gray-600 ml-2 font-normal'>
             {accountWithDebt}
           </span>
-        </p>
-        <p className='text-lg font-semibold text-gray-700'>
+        </div>
+        <div className='text-lg font-semibold text-gray-700  bg-white rounded-md shadow-lg py-2 px-6 text-center'>
           Accounts with Money:
           <span className='text-gray-600 ml-2 font-normal'>
             {accountWithMoney}
           </span>
-        </p>
-        <p className='text-lg font-semibold text-gray-700'>
+        </div>
+        <div className='text-lg font-semibold text-gray-700  bg-white rounded-md shadow-lg py-2 px-6 text-center'>
           Accounts with No Money:
           <span className='text-gray-600 ml-2 font-normal'>
             {accountNoMoney}
           </span>
-        </p>
-        <p className='text-lg font-semibold text-gray-700'>
+        </div>
+        <div className='text-lg font-semibold text-gray-700  bg-white rounded-md shadow-lg py-2 px-6 text-center'>
           Not verified accounts:
           <span className='text-gray-600 ml-2 font-normal'>{notVerified}</span>
-        </p>
-        <button
-          className=' border-red-600 bg-green-500 block'
-          onClick={stealMoney}>
-          Steal Money
-        </button>
+        </div>
+        <div className=' col-start-2 col-end-3 text-center'>
+          <button
+            className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4'
+            onClick={stealMoney}>
+            Tax everyone
+          </button>
+        </div>
       </div>
     </div>
   );

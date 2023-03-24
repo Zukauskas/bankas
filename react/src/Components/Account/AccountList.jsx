@@ -238,8 +238,6 @@ const AccountList = () => {
       })
     : [];
 
-  console.log(sortedAndFilteredAccounts);
-
   const empty = <p>No accounts to show</p>;
 
   return (
@@ -272,7 +270,7 @@ const AccountList = () => {
                   d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'></path>
               </svg>
               <h3 className='mb-5 text-lg font-normal text-gray-500 dark:text-gray-400'>
-                Are you sure you want to deposit {enteredAmount.amount} to
+                Are you sure you want to deposit €{enteredAmount.amount} to
                 account?
               </h3>
               <button
@@ -311,7 +309,7 @@ const AccountList = () => {
                 <p className='font-bold text-gray-700 capitalize mb-2'>
                   {acc.name} {acc.lastName}
                 </p>
-                <p className='text-gray-700 font-bold mb-4'>${acc.sum}</p>
+                <p className='text-gray-700 font-bold mb-4'>€{acc.sum}</p>
                 <div className='w-full flex flex-row items-center justify-between'>
                   <button
                     className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 absolute top-0 right-12'
