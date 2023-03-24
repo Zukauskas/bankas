@@ -209,6 +209,24 @@ app.put('/stealmoney', (req, res) => {
     })
 })
 
+// toggle blocked status
+
+app.put('/block/:id', (req, res) => {
+    const id = req.params.id;
+    connection.query('UPDATE users SET isBlocked = !isBlocked WHERE id = ?', [id], (error, results) => {
+        if (error) {
+            console.error(error);
+        }
+    })
+    connection.query('SELECT * FROM users', (error, results) => {
+        if (error) {
+            console.error(error);
+        }
+        res.status(200).send(results);
+
+    })
+})
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

@@ -20,7 +20,34 @@ const AccountList = () => {
     accounts,
     setDeletedAccount,
     setSumChanged,
+    setAccount,
   } = useContext(Global);
+
+  const userBlockHandler = id => {
+    fetch('http://localhost:3003/block' + '/' + id, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => setAccount(data));
+  };
+
+  const blockedUserModalHandler = () => {
+    setShowModal({
+      state: 'visible',
+      message: 'User blocked',
+      color: 'bg-red-500',
+    });
+    setTimeout(() => {
+      setShowModal({
+        state: 'hidden',
+        message: '',
+        color: '',
+      });
+    }, 2000);
+  };
 
   useEffect(() => {
     if (depositConfirmModal.approved) {
@@ -239,10 +266,20 @@ const AccountList = () => {
                   <p className='text-gray-700 font-bold mb-4'>${acc.sum}</p>
                   <div className='w-full flex flex-row items-center justify-between'>
                     <button
+                      className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 absolute top-0 right-12'
+                      onClick={() => userBlockHandler(acc.id)}>
+                      {acc.isBlocked ? 'Unblock' : 'Block'}
+                    </button>
+                    <button
                       className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 absolute top-0 right-0'
-                      onClick={() => deleteHandler(acc.id)}>
+                      onClick={() =>
+                        acc.isBlocked
+                          ? blockedUserModalHandler()
+                          : deleteHandler(acc.id)
+                      }>
                       X
                     </button>
+
                     <div className='flex flex-row items-center space-x-4'>
                       <input
                         type='number'
@@ -259,12 +296,20 @@ const AccountList = () => {
                       />
                       <button
                         className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded deposit-button'
-                        onClick={() => depositHandler(acc.id)}>
+                        onClick={() =>
+                          acc.isBlocked
+                            ? blockedUserModalHandler()
+                            : depositHandler(acc.id)
+                        }>
                         Deposit
                       </button>
                       <button
                         className='bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded withdraw-button'
-                        onClick={() => withdrawHandler(acc.id)}>
+                        onClick={() =>
+                          acc.isBlocked
+                            ? blockedUserModalHandler()
+                            : withdrawHandler(acc.id)
+                        }>
                         Withdraw
                       </button>
                     </div>
