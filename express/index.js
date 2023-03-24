@@ -4,17 +4,24 @@ const cookieParser = require('cookie-parser');
 const { v4: uuid } = require('uuid');
 const md5 = require('md5');
 const mysql = require('mysql')
+const fs = require('fs');
+
 
 const app = express();
 const PORT = 3003;
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
 
 app.use(cookieParser());
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+
+app.use(express.static('public'));
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -50,7 +57,31 @@ app.get('/accounts', (req, res) => {
 app.post(
     '/accounts', (req, res) => {
         const { name, lastName } = req.body;
-        connection.query('INSERT INTO users (name, lastName) VALUES (?, ?)', [name, lastName], (error, results) => {
+        let fileName = null;
+
+        if (req.body.file !== null) {
+
+            let type = 'unknown';
+            let file;
+
+            if (req.body.file.indexOf('data:image/png;base64,') === 0) {
+                type = 'png';
+                file = Buffer.from(req.body.file.replace('data:image/png;base64,', ''), 'base64');
+            } else if (req.body.file.indexOf('data:image/jpeg;base64,') === 0) {
+                type = 'jpg';
+                file = Buffer.from(req.body.file.replace('data:image/jpeg;base64,', ''), 'base64');
+            } else {
+                file = Buffer.from(req.body.file, 'base64');
+            }
+
+            fileName = uuid() + '.' + type;
+
+            fs.writeFileSync('./public/img/' + fileName, file);
+        }
+
+
+
+        connection.query('INSERT INTO users (name, lastName, image) VALUES (?, ?, ?)', [name, lastName, fileName], (error, results) => {
             if (error) {
                 res.status(500).send({ message: error });
                 return;

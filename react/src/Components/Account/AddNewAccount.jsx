@@ -1,5 +1,6 @@
 import { useState, useReducer, useEffect, useContext } from 'react';
 import { Global } from '../Global';
+import { useFile } from './useFile';
 
 const nameReducer = (state, action) => {
   if (action.type === 'USER_INPUT') {
@@ -35,6 +36,7 @@ const lastNameReducer = (state, action) => {
 
 const AddNewAccount = () => {
   const [formIsValid, setFormIsValid] = useState(false);
+  const [file, readFile, remImage] = useFile();
 
   const { setShowModal, showModal, setNewAccount } = useContext(Global);
 
@@ -82,6 +84,7 @@ const AddNewAccount = () => {
       setNewAccount({
         name: nameState.value,
         lastName: lastNameState.value,
+        file,
       });
       setShowModal({
         state: 'visible',
@@ -100,6 +103,7 @@ const AddNewAccount = () => {
         value: '',
         isValid: undefined,
       });
+      remImage();
     }
   };
 
@@ -157,6 +161,8 @@ const AddNewAccount = () => {
           onBlur={validateLastNameHandler}
           required
         />
+        <label htmlFor='file'>File:</label>
+        <input type='file' id='file' onChange={readFile} />
         <button
           className={`${
             formIsValid ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400'
