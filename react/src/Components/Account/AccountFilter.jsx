@@ -1,13 +1,15 @@
 const AccountFilter = ({ filterHandler }) => {
   return (
     <div className='flex items-center gap-2'>
-      <label htmlFor='account-select' className='block font-bold text-gray-700'>
+      <label
+        htmlFor='account-select'
+        className='block text-sm font-medium text-gray-900'>
         Accounts:
       </label>
       <select
         name='account'
         onChange={filterHandler}
-        className='border border-gray-400 rounded py-2 px-4'>
+        className='block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500'>
         <option value='All'>All</option>
         <option value='withMoney'>With Money</option>
         <option value='withDebt'>With Debt</option>
