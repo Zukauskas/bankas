@@ -250,9 +250,7 @@ const AccountList = () => {
       {/* Confirmation modal */}
 
       <div
-        id='popup-modal'
-        tabIndex='-1'
-        className={`${depositConfirmModal.state} fixed top-0 left-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full`}>
+        className={`${depositConfirmModal.state} fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex justify-center items-center z-10`}>
         <div className='relative w-full h-full max-w-md md:h-auto'>
           <div className='relative bg-white rounded-lg shadow dark:bg-gray-700'>
             <div className='p-6 text-center'>
@@ -274,14 +272,12 @@ const AccountList = () => {
                 account?
               </h3>
               <button
-                data-modal-hide='popup-modal'
                 type='button'
                 className='text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2'
                 onClick={approveDeposit}>
                 Yes, I'm sure
               </button>
               <button
-                data-modal-hide='popup-modal'
                 type='button'
                 className='text-red-500 bg-white hover:bg-red-100 focus:ring-4 focus:outline-none focus:ring-red-200 rounded-lg border border-red-200 text-sm font-medium px-5 py-2.5 hover:text-red-900 focus:z-10 dark:bg-red-700 dark:text-red-300 dark:border-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-600'
                 onClick={cancelDeposit}>
@@ -295,74 +291,129 @@ const AccountList = () => {
         className={`${showModal.state} ${showModal.color} w-1/3 px-2 py-4 fixed top-1 text-center rounded-md`}>
         <p>{showModal.message}</p>
       </div>
-      <div className='container flex flex-wrap gap-4 relative justify-center'>
-        {sortedAndFilteredAccounts.length > 0
-          ? sortedAndFilteredAccounts.map(acc => (
-              <div
-                key={acc.id}
-                className='bg-white shadow-md rounded px-8 py-6 mb-4 relative flex flex-col items-center'>
-                <img
-                  src={`${acc.image ? imgURL + acc.image : './racoon.png'}`}
-                  alt='profile image'
-                  className='h-20 w-20 rounded-full ring-2 ring-orange-400 mb-4'
-                />
-                <p className='font-bold text-gray-700 capitalize mb-2'>
-                  {acc.name} {acc.lastName}
-                </p>
-                <p className='text-gray-700 font-bold mb-4'>€{acc.sum}</p>
-                <div className='w-full flex flex-row items-center justify-between'>
-                  <button
-                    className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 absolute top-0 right-12'
-                    onClick={() => userBlockHandler(acc.id)}>
-                    {acc.isBlocked ? 'Unblock' : 'Block'}
-                  </button>
-                  <button
-                    className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 absolute top-0 right-0'
-                    onClick={() =>
-                      acc.isBlocked
-                        ? blockedUserModalHandler('Cannot delete account')
-                        : deleteHandler(acc.id)
-                    }>
-                    X
-                  </button>
-
-                  <div className='flex flex-row items-center space-x-4'>
-                    <input
-                      type='number'
-                      id={acc.id}
-                      onChange={sumHandler}
-                      value={
-                        +acc.id === +enteredAmount.id
-                          ? enteredAmount.amount
-                          : ''
-                      }
-                      className='border border-gray-400 rounded py-2 px-4 w-24'
-                      min={0}
-                      step='0.01'
-                    />
-                    <button
-                      className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded deposit-button'
-                      onClick={() =>
-                        acc.isBlocked
-                          ? blockedUserModalHandler('Cannot deposit')
-                          : depositHandler(acc.id)
-                      }>
-                      Deposit
-                    </button>
-                    <button
-                      className='bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded withdraw-button'
-                      onClick={() =>
-                        acc.isBlocked
-                          ? blockedUserModalHandler('Cannot withdraw')
-                          : withdrawHandler(acc.id)
-                      }>
-                      Withdraw
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))
-          : empty}
+      <div className='overflow-hidden rounded-lg border border-gray-200 shadow-md'>
+        <table className='w-full border-collapse bg-white text-left text-sm text-gray-500'>
+          <thead className='bg-gray-50'>
+            <tr>
+              <th scope='col' className='px-6 py-4 font-medium text-gray-900'>
+                Name
+              </th>
+              <th scope='col' className='px-6 py-4 font-medium text-gray-900'>
+                Account state
+              </th>
+              <th scope='col' className='px-6 py-4 font-medium text-gray-900'>
+                Balance (€)
+              </th>
+              <th scope='col' className='px-6 py-4 font-medium text-gray-900'>
+                Change Balance
+              </th>
+              <th scope='col' className='px-6 py-4 font-medium text-gray-900'>
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className='divide-y divide-gray-100 border-t border-gray-100'>
+            {sortedAndFilteredAccounts.length > 0
+              ? sortedAndFilteredAccounts.map(acc => (
+                  <tr className='hover:bg-gray-50' key={acc.id}>
+                    <th className='flex gap-3 font-normal  py-2 px-4 text-gray-900'>
+                      <div className='relative h-10 w-10'>
+                        <img
+                          className='h-full w-full rounded-full object-cover object-center'
+                          src={`${
+                            acc.image ? imgURL + acc.image : './racoon.png'
+                          }`}
+                        />
+                      </div>
+                      <div className='text-sm flex'>
+                        <div className='font-medium text-gray-700 self-center'>
+                          {acc.name} {acc.lastName}
+                        </div>
+                      </div>
+                    </th>
+                    <td className=' py-2 px-4'>
+                      <span
+                        className={`cursor-pointer flex justify-center items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold ${
+                          acc.isBlocked ? 'text-red-600' : 'text-green-600'
+                        }`}
+                        onClick={() => userBlockHandler(acc.id)}>
+                        {acc.isBlocked ? 'Blocked' : 'Active'}
+                      </span>
+                    </td>
+                    <td className=' py-2 px-4 text-center'>€{acc.sum}</td>
+                    <td className=' py-2 px-4'>
+                      <div className='flex flex-row items-center space-x-4'>
+                        <input
+                          type='number'
+                          id={acc.id}
+                          onChange={sumHandler}
+                          value={
+                            +acc.id === +enteredAmount.id
+                              ? enteredAmount.amount
+                              : ''
+                          }
+                          className='border border-gray-400 rounded py-2 px-4 w-24'
+                          min={0}
+                          step='0.01'
+                        />
+                        <button
+                          className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded deposit-button'
+                          onClick={() =>
+                            acc.isBlocked
+                              ? blockedUserModalHandler('Cannot deposit')
+                              : depositHandler(acc.id)
+                          }>
+                          Deposit
+                        </button>
+                        <button
+                          className='bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded withdraw-button'
+                          onClick={() =>
+                            acc.isBlocked
+                              ? blockedUserModalHandler('Cannot withdraw')
+                              : withdrawHandler(acc.id)
+                          }>
+                          Withdraw
+                        </button>
+                      </div>
+                    </td>
+                    <td className='flex justify-center py-2 px-4'>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        strokeWidth='1.5'
+                        stroke='currentColor'
+                        className='h-10 w-6 text-red-500 hover:text-red-700 cursor-pointer'
+                        x-tooltip='tooltip'
+                        onClick={() =>
+                          acc.isBlocked
+                            ? blockedUserModalHandler('Cannot delete account')
+                            : deleteHandler(acc.id)
+                        }>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'
+                        />
+                      </svg>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        className='feather feather-edit-3 h-10 w-6  text-blue-500 hover:text-blue-700 cursor-pointer'>
+                        <path d='M12 20h9'></path>
+                        <path d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'></path>
+                      </svg>
+                    </td>
+                  </tr>
+                ))
+              : empty}
+          </tbody>
+        </table>
       </div>
     </>
   );
