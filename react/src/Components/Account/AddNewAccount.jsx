@@ -38,7 +38,13 @@ const AddNewAccount = () => {
   const [formIsValid, setFormIsValid] = useState(false);
   const [file, readFile, remImage] = useFile();
 
-  const { setShowModal, showModal, setNewAccount } = useContext(Global);
+  const {
+    setShowModal,
+    showModal,
+    setNewAccount,
+    newAccountModal,
+    setNewAccountModal,
+  } = useContext(Global);
 
   const [nameState, dispatchName] = useReducer(nameReducer, {
     value: '',
@@ -104,6 +110,7 @@ const AddNewAccount = () => {
         isValid: undefined,
       });
       remImage();
+      setNewAccountModal(false);
     }
   };
 
@@ -114,64 +121,91 @@ const AddNewAccount = () => {
         <p>{showModal.message}</p>
       </div>
 
-      <form
-        onSubmit={dataHandler}
-        className='flex justify-center items-center flex-col gap-4 w-full sm:w-10/12 md:w-8/12 lg:w-7/12 2xl:w-6/12 lg:flex-row bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 relative'>
-        <label
-          htmlFor='name'
-          className={`mr-2 self-start lg:self-center  whitespace-nowrap relative ${
-            nameIsValid === false
-              ? `after:content-['Only_3_or_more_letters_are_valid'] after:block after:absolute after:left-16 after:-bottom-9 after:text-red-600 `
-              : ''
-          }`}>
-          Name
-        </label>
-        <input
-          className={`border ${
-            nameIsValid === false
-              ? 'border-red-600 bg-red-300'
-              : 'border-gray-400'
-          } rounded py-2 px-4 w-full`}
-          type='text'
-          id='name'
-          value={nameState.value}
-          onChange={handleNameChange}
-          onBlur={validateNameHandler}
-          required
-        />
-        <label
-          htmlFor='lastName'
-          className={`mx-2 self-start lg:self-center whitespace-nowrap relative ${
-            lastNameIsValid === false
-              ? `after:content-['Only_3_or_more_letters_are_valid'] after:block after:absolute after:-right-60 after:-bottom-9 after:text-red-600 `
-              : ''
-          }`}>
-          Last Name
-        </label>
-        <input
-          className={`border ${
-            lastNameIsValid === false
-              ? 'border-red-600 bg-red-300'
-              : 'border-gray-400'
-          } rounded py-2 px-4 w-full `}
-          type='text'
-          id='lastName'
-          value={lastNameState.value}
-          onChange={handleLastNameChange}
-          onBlur={validateLastNameHandler}
-          required
-        />
-        <label htmlFor='file'>File:</label>
-        <input type='file' id='file' onChange={readFile} />
+      {newAccountModal && (
+        <div className='fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex justify-center items-center z-10'>
+          <form
+            onSubmit={dataHandler}
+            className='flex justify-center items-center flex-col gap-4 w-full sm:w-10/12 md:w-8/12 lg:w-7/12 2xl:w-3/12 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 relative'>
+            <label
+              htmlFor='name'
+              className={`mr-2 self-start whitespace-nowrap relative ${
+                nameIsValid === false
+                  ? `after:content-['Only_3_or_more_letters_are_valid'] after:block after:absolute after:left-16 after:-bottom-9 after:text-red-600 `
+                  : ''
+              }`}>
+              Name
+            </label>
+            <input
+              className={`border ${
+                nameIsValid === false
+                  ? 'border-red-600 bg-red-300'
+                  : 'border-gray-400'
+              } rounded py-2 px-4 w-full`}
+              type='text'
+              id='name'
+              value={nameState.value}
+              onChange={handleNameChange}
+              onBlur={validateNameHandler}
+              required
+            />
+            <label
+              htmlFor='lastName'
+              className={`mx-2 self-start whitespace-nowrap relative ${
+                lastNameIsValid === false
+                  ? `after:content-['Only_3_or_more_letters_are_valid'] after:block after:absolute after:-right-60 after:-bottom-9 after:text-red-600 `
+                  : ''
+              }`}>
+              Last Name
+            </label>
+            <input
+              className={`border ${
+                lastNameIsValid === false
+                  ? 'border-red-600 bg-red-300'
+                  : 'border-gray-400'
+              } rounded py-2 px-4 w-full `}
+              type='text'
+              id='lastName'
+              value={lastNameState.value}
+              onChange={handleLastNameChange}
+              onBlur={validateLastNameHandler}
+              required
+            />
+            <label
+              htmlFor='file'
+              className='mx-2 self-start whitespace-nowrap relative'>
+              ID:
+            </label>
+            <input
+              type='file'
+              id='file'
+              className='block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none'
+              onChange={readFile}
+            />
+            <button
+              className={`${
+                formIsValid ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400'
+              } text-white font-bold py-2 px-4 w-full rounded whitespace-nowrap`}
+              type='submit'
+              disabled={!formIsValid}>
+              Add Account
+            </button>
+            <button
+              className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded whitespace-nowrap right-5 w-full '
+              type='button'
+              onClick={() => setNewAccountModal(prevState => !prevState)}>
+              Cancel
+            </button>
+          </form>
+        </div>
+      )}
+      {!newAccountModal && (
         <button
-          className={`${
-            formIsValid ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400'
-          } text-white font-bold py-2 px-4 w-full rounded whitespace-nowrap`}
-          type='submit'
-          disabled={!formIsValid}>
-          Add Account
+          className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded whitespace-nowrap absolute right-5 top-20 '
+          type='button'
+          onClick={() => setNewAccountModal(prevState => !prevState)}>
+          Add New Account
         </button>
-      </form>
+      )}
     </>
   );
 };

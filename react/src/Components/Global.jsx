@@ -10,6 +10,7 @@ const GlobalProvider = ({ children }) => {
   const [newAccount, setNewAccount] = useState(null);
   const [deletedAccount, setDeletedAccount] = useState(null);
   const [sumChanged, setSumChanged] = useState(null);
+  const [newAccountModal, setNewAccountModal] = useState(false);
   const [showModal, setShowModal] = useState({
     state: 'hidden',
     message: null,
@@ -124,6 +125,8 @@ const GlobalProvider = ({ children }) => {
         setSumChanged,
         showModal,
         setShowModal,
+        newAccountModal,
+        setNewAccountModal,
       }}>
       {children}
     </Global.Provider>
