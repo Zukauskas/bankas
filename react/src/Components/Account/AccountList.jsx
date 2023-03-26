@@ -3,6 +3,8 @@ import AccountFilter from './AccountFilter';
 import AccountSort from './AccountSort';
 import { Global } from '../Global';
 import { useFile } from './useFile';
+import AccountEditModal from '../Modals/AccountEditModal';
+import DepositConfirmation from '../Modals/DepositConfirmation';
 
 const AccountList = () => {
   const imgURL = 'http://localhost:3003/img/';
@@ -33,16 +35,16 @@ const AccountList = () => {
     setAccount,
   } = useContext(Global);
 
-  const delImage = _ => {
+  const delImage = () => {
     setDelImg(true);
   };
 
-  const cancelImage = _ => {
+  const cancelImage = () => {
     remImage();
     setDelImg(false);
   };
 
-  const modalClose = _ => {
+  const modalClose = () => {
     remImage();
     setDelImg(false);
     setEditAccountModal(false);
@@ -67,6 +69,7 @@ const AccountList = () => {
       .then(response => response.json())
       .then(data => setAccount(data));
     setEditAccountModal(false);
+    remImage();
   };
 
   const userBlockHandler = id => {
@@ -81,7 +84,11 @@ const AccountList = () => {
   };
 
   const blockedUserModalHandler = msg => {
-    'edit';
+    setShowModal({
+      state: 'visible',
+      message: `${msg}, user is blocked`,
+      color: 'bg-red-500',
+    });
     setTimeout(() => {
       setShowModal({
         state: 'hidden',
@@ -291,122 +298,27 @@ const AccountList = () => {
       </div>
 
       {editAccountModal && (
-        <div className='fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex justify-center items-center z-10'>
-          <form
-            onSubmit={edit}
-            className='flex justify-center items-center flex-col gap-4 w-full sm:w-10/12 md:w-8/12 lg:w-7/12 2xl:w-3/12 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 relative'>
-            <label
-              htmlFor='name'
-              className={`mr-2 self-start whitespace-nowrap relative`}>
-              Name
-            </label>
-            <input
-              className={`border rounded py-2 px-4 w-full`}
-              type='text'
-              value={editAccount.name}
-              id='name'
-              disabled={true}
-            />
-            <label
-              htmlFor='lastName'
-              className={`mx-2 self-start whitespace-nowrap relative`}>
-              Last Name
-            </label>
-            <input
-              className={`border rounded py-2 px-4 w-full `}
-              type='text'
-              value={editAccount.lastName}
-              id='lastName'
-              disabled={true}
-            />
-            <label
-              htmlFor='file'
-              className='mx-2 self-start whitespace-nowrap relative'>
-              ID:
-            </label>
-            <input
-              type='file'
-              id='file'
-              className='block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none'
-              onChange={readFile}
-            />
-            <div>
-              {file ? (
-                <img className='upload-image mb-3' src={file} alt='to upload' />
-              ) : editAccount.image && !delImg ? (
-                <img className='list-image' src={imgURL + editAccount.image} />
-              ) : (
-                <img className='list-image' src='./racoon.png' />
-              )}
-            </div>
-
-            <button
-              className={` text-black font-bold py-2 px-4 w-full rounded whitespace-nowrap`}
-              type='submit'>
-              Edit Account
-            </button>
-            <button
-              className={` text-black font-bold py-2 px-4 w-full rounded whitespace-nowrap`}
-              type='button'
-              onClick={delImage}>
-              Delete Image
-            </button>
-            <button
-              className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded whitespace-nowrap right-5 w-full '
-              type='button'
-              onClick={cancelImage}>
-              Cancel
-            </button>
-            <button
-              className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded whitespace-nowrap right-5 w-full '
-              type='button'
-              onClick={modalClose}>
-              Close
-            </button>
-          </form>
-        </div>
+        <AccountEditModal
+          edit={edit}
+          editAccount={editAccount}
+          file={file}
+          readFile={readFile}
+          delImage={delImage}
+          delImg={delImg}
+          imgURL={imgURL}
+          cancelImage={cancelImage}
+          modalClose={modalClose}
+        />
       )}
 
       {/* Confirmation modal */}
 
-      <div
-        className={`${depositConfirmModal.state} fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex justify-center items-center z-10`}>
-        <div className='relative w-full h-full max-w-md md:h-auto'>
-          <div className='relative bg-white rounded-lg shadow dark:bg-gray-700'>
-            <div className='p-6 text-center'>
-              <svg
-                aria-hidden='true'
-                className='mx-auto mb-4 text-gray-400 w-14 h-14 dark:text-gray-200'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'>
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth='2'
-                  d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'></path>
-              </svg>
-              <h3 className='mb-5 text-lg font-normal text-gray-500 dark:text-gray-400'>
-                Are you sure you want to deposit €{enteredAmount.amount} to
-                account?
-              </h3>
-              <button
-                type='button'
-                className='text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2'
-                onClick={approveDeposit}>
-                Yes, I'm sure
-              </button>
-              <button
-                type='button'
-                className='text-red-500 bg-white hover:bg-red-100 focus:ring-4 focus:outline-none focus:ring-red-200 rounded-lg border border-red-200 text-sm font-medium px-5 py-2.5 hover:text-red-900 focus:z-10 dark:bg-red-700 dark:text-red-300 dark:border-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-600'
-                onClick={cancelDeposit}>
-                No, cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DepositConfirmation
+        depositConfirmModal={depositConfirmModal}
+        enteredAmount={enteredAmount}
+        approveDeposit={approveDeposit}
+        cancelDeposit={cancelDeposit}
+      />
       <div
         className={`${showModal.state} ${showModal.color} w-1/3 px-2 py-4 fixed top-1 text-center rounded-md`}>
         <p>{showModal.message}</p>
@@ -441,7 +353,9 @@ const AccountList = () => {
                         <img
                           className='h-full w-full rounded-full object-cover object-center'
                           src={`${
-                            acc.image ? imgURL + acc.image : './racoon.png'
+                            acc.image
+                              ? imgURL + acc.image
+                              : imgURL + 'no-id.jpg'
                           }`}
                         />
                       </div>
