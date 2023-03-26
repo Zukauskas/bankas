@@ -114,6 +114,16 @@ const AddNewAccount = () => {
     }
   };
 
+  const cancelHandler = () => {
+    setNewAccountModal(false);
+    dispatchName(nameReducer, { value: '', isValid: undefined });
+    dispatchLastName(lastNameReducer, {
+      value: '',
+      isValid: undefined,
+    });
+    remImage();
+  };
+
   return (
     <>
       <div
@@ -199,7 +209,7 @@ const AddNewAccount = () => {
             <button
               className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded whitespace-nowrap right-5 w-full '
               type='button'
-              onClick={() => setNewAccountModal(prevState => !prevState)}>
+              onClick={cancelHandler}>
               Cancel
             </button>
           </form>
