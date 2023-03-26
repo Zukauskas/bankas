@@ -130,7 +130,7 @@ const AddNewAccount = () => {
               htmlFor='name'
               className={`mr-2 self-start whitespace-nowrap relative ${
                 nameIsValid === false
-                  ? `after:content-['Only_3_or_more_letters_are_valid'] after:block after:absolute after:left-16 after:-bottom-9 after:text-red-600 `
+                  ? `after:content-['Only_3_or_more_letters_are_valid'] after:block after:absolute after:left-1 after:-bottom-20 after:text-xs after:text-red-600 `
                   : ''
               }`}>
               Name
@@ -140,7 +140,7 @@ const AddNewAccount = () => {
                 nameIsValid === false
                   ? 'border-red-600 bg-red-300'
                   : 'border-gray-400'
-              } rounded py-2 px-4 w-full`}
+              } rounded py-2 px-4 w-full mb-3`}
               type='text'
               id='name'
               value={nameState.value}
@@ -152,7 +152,7 @@ const AddNewAccount = () => {
               htmlFor='lastName'
               className={`mx-2 self-start whitespace-nowrap relative ${
                 lastNameIsValid === false
-                  ? `after:content-['Only_3_or_more_letters_are_valid'] after:block after:absolute after:-right-60 after:-bottom-9 after:text-red-600 `
+                  ? `after:content-['Only_3_or_more_letters_are_valid'] after:block after:absolute after:-left-1 after:-bottom-20 after:text-xs after:text-red-600 `
                   : ''
               }`}>
               Last Name
@@ -162,7 +162,7 @@ const AddNewAccount = () => {
                 lastNameIsValid === false
                   ? 'border-red-600 bg-red-300'
                   : 'border-gray-400'
-              } rounded py-2 px-4 w-full `}
+              } rounded py-2 px-4 w-full mb-3 `}
               type='text'
               id='lastName'
               value={lastNameState.value}
@@ -181,6 +181,13 @@ const AddNewAccount = () => {
               className='block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none'
               onChange={readFile}
             />
+            <div className='flex justify-center items-center flex-col gap-4 w-full'>
+              {file && (
+                <div className='flex justify-center items-center flex-col gap-4 w-full'>
+                  <img src={file} alt='file' />
+                </div>
+              )}
+            </div>
             <button
               className={`${
                 formIsValid ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400'
