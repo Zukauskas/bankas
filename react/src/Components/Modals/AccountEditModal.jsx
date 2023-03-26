@@ -74,7 +74,7 @@ const AccountEditModal = ({
             className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded whitespace-nowrap right-5 w-full '
             type='button'
             onClick={cancelImage}>
-            Abort Change
+            Cancel Image
           </button>
           <button
             className=' text-black font-bold py-2 px-4 rounded whitespace-nowrap absolute top-0 right-0'
