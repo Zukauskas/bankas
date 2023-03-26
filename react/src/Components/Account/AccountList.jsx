@@ -282,7 +282,13 @@ const AccountList = () => {
       })
     : [];
 
-  const empty = <p>No accounts to show</p>;
+  const empty = (
+    <tr className='text-center text-gray-500'>
+      <td colSpan='7' className='py-3'>
+        No accounts to show
+      </td>
+    </tr>
+  );
 
   const editModal = id => {
     const account = accounts.filter(acc => +acc.id === +id)[0];
