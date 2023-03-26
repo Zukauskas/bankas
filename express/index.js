@@ -147,6 +147,69 @@ app.delete('/accounts/:id', (req, res) => {
 
 });
 
+app.put('/edit', (req, res) => {
+
+    let fileName = null;
+
+    if (req.body.delImg || req.body.file !== null) {
+        let sql = `
+        SELECT image
+        FROM users
+        WHERE id = ?
+        `;
+        connection.query(sql, [req.body.id], (err, result) => {
+            if (err) throw err;
+            if (result[0].image) {
+                fs.unlinkSync('./public/img/' + result[0].image);
+            }
+        });
+    }
+
+    if (req.body.file !== null) {
+
+        let type = 'unknown';
+        let file;
+
+        if (req.body.file.indexOf('data:image/png;base64,') === 0) {
+            type = 'png';
+            file = Buffer.from(req.body.file.replace('data:image/png;base64,', ''), 'base64');
+        } else if (req.body.file.indexOf('data:image/jpeg;base64,') === 0) {
+            type = 'jpg';
+            file = Buffer.from(req.body.file.replace('data:image/jpeg;base64,', ''), 'base64');
+        } else {
+            file = Buffer.from(req.body.file, 'base64');
+        }
+
+        fileName = uuid() + '.' + type;
+
+        fs.writeFileSync('./public/img/' + fileName, file);
+    }
+
+    let sql;
+    let params;
+
+    sql = `
+        UPDATE users
+        SET image = ? 
+        WHERE id = ?
+    `;
+    params = [fileName, req.body.id];
+
+    connection.query(sql, params, (err) => {
+        if (err) throw err;
+    });
+
+    connection.query('SELECT * FROM users', (error, results) => {
+        if (error) {
+            res.status(500).send({ message: error });
+            return;
+        }
+
+        res.status(200).send(results);
+    });
+
+});
+
 // set cookie
 
 app.post('/login', (req, res) => {

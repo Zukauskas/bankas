@@ -2,12 +2,17 @@ import { useState, useContext, useEffect } from 'react';
 import AccountFilter from './AccountFilter';
 import AccountSort from './AccountSort';
 import { Global } from '../Global';
+import { useFile } from './useFile';
 
 const AccountList = () => {
   const imgURL = 'http://localhost:3003/img/';
 
   const [accountFilter, setAccountFilter] = useState('All');
   const [accountSort, setAccountSort] = useState('All');
+  const [editAccountModal, setEditAccountModal] = useState(false);
+  const [editAccount, setEditAccount] = useState({});
+  const [file, readFile, remImage] = useFile();
+  const [delImg, setDelImg] = useState(false);
 
   const [depositConfirmModal, setDepositConfirmModal] = useState({
     state: 'hidden',
@@ -28,6 +33,42 @@ const AccountList = () => {
     setAccount,
   } = useContext(Global);
 
+  const delImage = _ => {
+    setDelImg(true);
+  };
+
+  const cancelImage = _ => {
+    remImage();
+    setDelImg(false);
+  };
+
+  const modalClose = _ => {
+    remImage();
+    setDelImg(false);
+    setEditAccountModal(false);
+  };
+
+  const edit = e => {
+    e.preventDefault();
+    const account = {
+      id: editAccount.id,
+      name: editAccount.name,
+      lastName: editAccount.lastName,
+      file,
+      delImg,
+    };
+    fetch('http://localhost:3003/edit', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(account),
+    })
+      .then(response => response.json())
+      .then(data => setAccount(data));
+    setEditAccountModal(false);
+  };
+
   const userBlockHandler = id => {
     fetch('http://localhost:3003/block' + '/' + id, {
       method: 'PUT',
@@ -40,11 +81,7 @@ const AccountList = () => {
   };
 
   const blockedUserModalHandler = msg => {
-    setShowModal({
-      state: 'visible',
-      message: `${msg}, user is blocked`,
-      color: 'bg-red-500',
-    });
+    'edit';
     setTimeout(() => {
       setShowModal({
         state: 'hidden',
@@ -240,12 +277,95 @@ const AccountList = () => {
 
   const empty = <p>No accounts to show</p>;
 
+  const editModal = id => {
+    const account = accounts.filter(acc => +acc.id === +id)[0];
+    setEditAccountModal(true);
+    setEditAccount(account);
+  };
+
   return (
     <>
       <div className='flex gap-4'>
         <AccountFilter filterHandler={filterHandler} />
         <AccountSort sortHandler={sortHandler} />
       </div>
+
+      {editAccountModal && (
+        <div className='fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex justify-center items-center z-10'>
+          <form
+            onSubmit={edit}
+            className='flex justify-center items-center flex-col gap-4 w-full sm:w-10/12 md:w-8/12 lg:w-7/12 2xl:w-3/12 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 relative'>
+            <label
+              htmlFor='name'
+              className={`mr-2 self-start whitespace-nowrap relative`}>
+              Name
+            </label>
+            <input
+              className={`border rounded py-2 px-4 w-full`}
+              type='text'
+              value={editAccount.name}
+              id='name'
+              disabled={true}
+            />
+            <label
+              htmlFor='lastName'
+              className={`mx-2 self-start whitespace-nowrap relative`}>
+              Last Name
+            </label>
+            <input
+              className={`border rounded py-2 px-4 w-full `}
+              type='text'
+              value={editAccount.lastName}
+              id='lastName'
+              disabled={true}
+            />
+            <label
+              htmlFor='file'
+              className='mx-2 self-start whitespace-nowrap relative'>
+              ID:
+            </label>
+            <input
+              type='file'
+              id='file'
+              className='block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none'
+              onChange={readFile}
+            />
+            <div>
+              {file ? (
+                <img className='upload-image mb-3' src={file} alt='to upload' />
+              ) : editAccount.image && !delImg ? (
+                <img className='list-image' src={imgURL + editAccount.image} />
+              ) : (
+                <img className='list-image' src='./racoon.png' />
+              )}
+            </div>
+
+            <button
+              className={` text-black font-bold py-2 px-4 w-full rounded whitespace-nowrap`}
+              type='submit'>
+              Edit Account
+            </button>
+            <button
+              className={` text-black font-bold py-2 px-4 w-full rounded whitespace-nowrap`}
+              type='button'
+              onClick={delImage}>
+              Delete Image
+            </button>
+            <button
+              className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded whitespace-nowrap right-5 w-full '
+              type='button'
+              onClick={cancelImage}>
+              Cancel
+            </button>
+            <button
+              className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded whitespace-nowrap right-5 w-full '
+              type='button'
+              onClick={modalClose}>
+              Close
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* Confirmation modal */}
 
@@ -405,7 +525,8 @@ const AccountList = () => {
                         strokeWidth='2'
                         strokeLinecap='round'
                         strokeLinejoin='round'
-                        className='feather feather-edit-3 h-10 w-6  text-blue-500 hover:text-blue-700 cursor-pointer'>
+                        className='feather feather-edit-3 h-10 w-6  text-blue-500 hover:text-blue-700 cursor-pointer'
+                        onClick={() => editModal(acc.id)}>
                         <path d='M12 20h9'></path>
                         <path d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'></path>
                         <title>Edit Account details</title>
