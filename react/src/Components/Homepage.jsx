@@ -50,7 +50,7 @@ const Homepage = () => {
                       {totalMoney < 999
                         ? totalMoney.toFixed(2)
                         : totalMoney < 999999
-                        ? (totalMoney / 1000).toFixed(0) + 'K'
+                        ? (totalMoney / 1000).toFixed(1) + 'K'
                         : totalMoney < 999999999
                         ? (totalMoney / 1000000).toFixed(1) + 'M'
                         : (totalMoney / 1000000000).toFixed(1) + 'B'}
